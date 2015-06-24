@@ -49,11 +49,11 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       t1 := Time.Monotonic.to_seconds(Time.Monotonic.time());       
       let delay = !t1 -. !t0 in
       d_array.(!i) <- delay;
-      (* C.log c (Printf.sprintf "t0 = %f    t1= %f    delay = %f" !t0 !t1 delay); *)   (* For debugging *)
-      if !i < 63 then i := !i + 1 else begin
+      (* C.log c (Printf.sprintf "t0 = %f  t1= %f  delay = %f" !t0 !t1 delay); *)       (* For debugging *)
+      if !i < (Array.length d_array - 1) then i := !i + 1 else begin
         i := 0;      
         let avg = (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
-        if avg > high_threshold then (                                          (* above that means ~ %80 cpu utilisation and likely to crash*)
+        if avg > high_threshold then (                                                  (* above that ~ %80 cpu utilisation and likely to crash*)
           C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);                            (* For debugging *)
           Lwt.ignore_result (
             lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
@@ -95,7 +95,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
           )  (fun exn -> 
           H.respond_not_found ()
           )
-          in 
+    in 
+          
     (* HTTP callback *)
     let callback conn_id request body =    
       t0 := Time.Monotonic.to_seconds(Time.Monotonic.time());
