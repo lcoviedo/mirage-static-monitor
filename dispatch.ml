@@ -14,8 +14,8 @@ let t1 = ref 0.0
 let i = ref 0
 let d_array = Array.make 64 0.0
 
-let high_threshodld = 0.00007
-let irmin_ip = "10.0.0.1"
+let h_load = 0.00007                                            (* High threshold value *)
+let irmin_ip = "10.0.0.1"                                       (* Location of irmin store *)
 
 let uri = Uri.of_string "http://irmin:8080/update/jitsu/vm/"    (* Path for vm requests*)
 let add_vm = `String "{\"params\":\"add_vm\"}"                  (* Parameter to be defined *)
@@ -28,7 +28,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
   let conduit = Conduit_mirage.empty
   let stackv4 = Conduit_mirage.stackv4 (module S)
   
-  (* Location of Irmin store *) 
+  (* Manual resolve for irmin*) 
   let irmin_store =
     let hosts = Hashtbl.create 3 in
     Hashtbl.add hosts "irmin"
@@ -53,7 +53,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       if !i < (Array.length d_array - 1) then i := !i + 1 else begin
         i := 0;      
         let avg = (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
-        if avg > high_threshold then (                                                  (* above that ~ %80 cpu utilisation and likely to crash*)
+        if avg > h_load then (                                                          (* above that ~ %80 cpu utilisation and likely to crash*)
           C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);                            (* For debugging *)
           Lwt.ignore_result (
             lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
