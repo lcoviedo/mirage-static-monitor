@@ -8,13 +8,17 @@ let green fmt  = sprintf ("\027[32m"^^fmt^^"\027[m")
 let yellow fmt = sprintf ("\027[33m"^^fmt^^"\027[m")
 let blue fmt   = sprintf ("\027[36m"^^fmt^^"\027[m")
 
+(* Initialise values for timestamps and array*)
 let t0 = ref 0.0
 let t1 = ref 0.0
 let i = ref 0
 let d_array = Array.make 64 0.0
 
-let uri = Uri.of_string "http://irmin:8080/update/jitsu/vm/"
-let add_vm = `String "{\"params\":\"add_vm\"}"  (* Parameter to be defined *)
+let high_threshodld = 0.00007
+let irmin_ip = "10.0.0.1"
+
+let uri = Uri.of_string "http://irmin:8080/update/jitsu/vm/"    (* Path for vm requests*)
+let add_vm = `String "{\"params\":\"add_vm\"}"                  (* Parameter to be defined *)
 
 module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
 
@@ -28,7 +32,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
   let irmin_store =
     let hosts = Hashtbl.create 3 in
     Hashtbl.add hosts "irmin"
-      (fun ~port -> `TCP (Ipaddr.of_string_exn "10.0.0.1", port));
+      (fun ~port -> `TCP (Ipaddr.of_string_exn irmin_ip, port));
     hosts  
     
   (* Store a parameter on Irmin *)     
@@ -48,8 +52,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       (* C.log c (Printf.sprintf "t0 = %f    t1= %f    delay = %f" !t0 !t1 delay); *)   (* For debugging *)
       if !i < 63 then i := !i + 1 else begin
         i := 0;      
-        let avg = (Array.fold_right (+.) d_array 0.0) /. 64. in
-        if avg > 0.00007 then (                           (* Value gotten from tests, above that means ~ %80 cpu utilisation and likely to crash*)
+        let avg = (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
+        if avg > high_threshold then (                                          (* above that means ~ %80 cpu utilisation and likely to crash*)
           C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);                            (* For debugging *)
           Lwt.ignore_result (
             lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
