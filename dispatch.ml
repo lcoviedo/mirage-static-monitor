@@ -11,14 +11,18 @@ let blue fmt   = sprintf ("\027[36m"^^fmt^^"\027[m")
 (* Initialise values for timestamps and array*)
 let t0 = ref 0.0
 let t1 = ref 0.0
+let t2 = ref 0.0
 let i = ref 0
 let d_array = Array.make 64 0.0
+let counter = ref 0
+let cid1 = ref 0
 
 let h_load = 0.00007                                            (* High threshold value *)
 let irmin_ip = "10.0.0.1"                                       (* Location of irmin store *)
 
 let uri = Uri.of_string "http://irmin:8080/update/jitsu/vm/"    (* Path for vm requests*)
 let add_vm = `String "{\"params\":\"add_vm\"}"                  (* Parameter to be defined *)
+
 
 module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
 
@@ -27,7 +31,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
    
   let conduit = Conduit_mirage.empty
   let stackv4 = Conduit_mirage.stackv4 (module S)
-  
+   
   (* Manual resolve for irmin*) 
   let irmin_store =
     let hosts = Hashtbl.create 3 in
@@ -43,18 +47,17 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
     C.log_s c (sprintf "%s" body)
    
   (* Monitor load based on request/reply times *)
-  (** TODO  scaling down*)
-  let monitoring c stack =  
+  let scale_up c stack =  
     Lwt.return (
       t1 := Time.Monotonic.to_seconds(Time.Monotonic.time());       
       let delay = !t1 -. !t0 in
       d_array.(!i) <- delay;
-      (* C.log c (Printf.sprintf "t0 = %f  t1= %f  delay = %f" !t0 !t1 delay); *)       (* For debugging *)
+      (*C.log c (Printf.sprintf "t0 = %f  t1= %f  delay = %f" !t0 !t1 delay);*)       (* For debugging *)                
       if !i < (Array.length d_array - 1) then i := !i + 1 else begin
         i := 0;      
         let avg = (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
-        if avg > h_load then (                                                          (* above that ~ %80 cpu utilisation and likely to crash*)
-          C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);                            (* For debugging *)
+        if avg > h_load then (                                              (* above that ~ %80 cpu and likely to crash*)
+          (*C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);*)                            (* For debugging *)
           Lwt.ignore_result (
             lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
             let res = Resolver_mirage.static irmin_store in
@@ -63,6 +66,16 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
         end)
 
   let start c fs stack = 
+(* Monitor idleness of unikernel *)
+    let rec scale_down n = (
+      cid1 := !counter;                                  (* !counter holds the current value of cids *)
+      Time.sleep n >>= fun () ->   
+        if !cid1 = !counter then C.log c (Printf.sprintf "LOW LOAD -> destroy replica") (**TODO -> write destroy request on irmin *)
+          else C.log c (Printf.sprintf "New connections in last 5 secs:%d" (!counter - !cid1)); (* For debugging *)
+      scale_down n) 
+    in
+    
+   Lwt.join[(
     let read_fs name =
       FS.size fs name >>= function
       | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
@@ -89,8 +102,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       | segments -> 
         let path = String.concat "/" segments in 
         Lwt.catch (fun () -> 
-          read_fs path
-          >>= fun body ->                                                                       
+          read_fs path >>= fun body ->                                                                       
           H.respond_string ~status:`OK ~body () 
           )  (fun exn -> 
           H.respond_not_found ()
@@ -102,10 +114,19 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       t0 := Time.Monotonic.to_seconds(Time.Monotonic.time());
       let uri = Cohttp.Request.uri request in
       let reply = dispatcher (split_path uri) in
-      let _ = monitoring c stack in
-      reply in
+      let _ = scale_up c stack in
+      reply 
+    in 
+    
+    let conn_closed (_,conn_id) =
+      let cid = Cohttp.Connection.to_string conn_id  in
+      C.log c (Printf.sprintf "conn %s closed" cid);
+      counter := int_of_string(cid); 
+      in
+        
       Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
-      let spec = H.make ~callback:callback () in
-      Conduit_mirage.listen conduit (`TCP 80) (H.listen spec)
+      let spec = H.make ~conn_closed ~callback:callback () in
+      Conduit_mirage.listen conduit (`TCP 80) (H.listen spec)); 
+      (scale_down 5.)]
           
 end
