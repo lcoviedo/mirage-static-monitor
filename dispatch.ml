@@ -16,11 +16,11 @@ let d_array = Array.make 64 0.0
 let counter = ref 0
 let cid1 = ref 0
 
-let h_load = 0.00007                                                                (* High threshold value *)
-let irmin_ip = "10.0.0.1"                                                           (* Location of irmin store *)
+let h_load = 0.00007                                                                  (* High threshold value *)
+let irmin_ip = "10.0.0.1"                                                             (* Location of irmin store *)
 
-let uri = Uri.of_string "http://irmin:8080/update/jitsu/vm/request/"                (* Path for vm requests*)
-let add_vm = `String "{\"params\":\"add_vm\"}"                                      (* Parameters to be defined *)
+let uri = Uri.of_string "http://irmin:8080/update/jitsu/vm/request/"                  (* Path for vm requests*)
+let add_vm = `String "{\"params\":\"add_vm\"}"                                        (* Parameters to be defined *)
 let destroy_vm = `String "{\"params\":\"destroy_vm\"}"
 
 
@@ -42,8 +42,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
   (* Store a parameter on Irmin *)     
   let http_post c ctx req=
     C.log_s c (sprintf "Posting a value %s in Irmin" (Uri.to_string uri)) >>= fun () ->
-    HTTP.post ~ctx ~body:req (*add_vm*) uri >>= fun (resp, body) ->
-    Cohttp_lwt_body.to_string req (*add_vm*) >>= fun body ->
+    HTTP.post ~ctx ~body:req uri >>= fun (resp, body) ->
+    Cohttp_lwt_body.to_string req >>= fun body ->
     C.log_s c (sprintf "%s" body)
    
   (* conduit *)
@@ -69,20 +69,22 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
           (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
         if avg > h_load then (                                                        (* above that ~ %80 cpu and likely to crash*)
           (*C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);*)                      (* For debugging *)
-          conduit_conn c stack add_vm
-        )) )
+          conduit_conn c stack add_vm)
+        )
+     )
         
   (* Monitor idleness of unikernel *)        
-  let rec scale_down c stack n =                                                     (* if idle for 5 secs then trigger action *)
-      cid1 := !counter;                                                              (* !counter holds the current value of cids *)
+  let rec scale_down c stack n =                                                      (* if idle for 5 secs then trigger action *)
+      cid1 := !counter;                                                               (* !counter holds the current value of cids *)
       Time.sleep n >>= fun () ->   
         if !cid1 = !counter then (
-          C.log c (Printf.sprintf "LOW LOAD -> destroy replica");                    (* For debugging *)           
+          (*C.log c (Printf.sprintf "LOW LOAD -> destroy replica");*)                 (* For debugging *)           
           conduit_conn c stack destroy_vm
           )
           else C.log c (
-                 Printf.sprintf "New conns in last 5s: %d" (!counter - !cid1));      (* For debugging *)
+                 Printf.sprintf "New conns in last 5s: %d" (!counter - !cid1));       (* For debugging *)
       scale_down c stack n 
+
 
   let start c fs stack = 
    Lwt.join[(
@@ -137,6 +139,6 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
       let spec = H.make ~conn_closed ~callback:callback () in
       Conduit_mirage.listen conduit (`TCP 80) (H.listen spec)); 
-      (scale_down c stack 5.0)]                                             (* Scale down monitor thread *)
+      (scale_down c stack 5.0)]                                                       (* Scale down monitor thread *)
           
 end
