@@ -21,7 +21,7 @@ let h_load = 0.00007                                                            
 let irmin_ip = "10.0.0.1"                                                           (* Location of irmin store *)
 
 let uri = Uri.of_string "http://irmin:8080/update/jitsu/vm/request/"                (* Path for vm requests*)
-let add_vm = `String "{\"params\":\"add_vm\"}"                                      (* Parameter to be defined *)
+let add_vm = `String "{\"params\":\"add_vm\"}"                                      (* Parameters to be defined *)
 let destroy_vm = `String "{\"params\":\"destroy_vm\"}"
 
 
@@ -47,6 +47,14 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
     Cohttp_lwt_body.to_string req (*add_vm*) >>= fun body ->
     C.log_s c (sprintf "%s" body)
    
+  (* conduit *)
+  let conduit_conn c stack req=
+    Lwt.ignore_result (
+      lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
+        let res = Resolver_mirage.static irmin_store in
+        let ctx = HTTP.ctx res conduit in
+        http_post c ctx req) 
+   
   (* Monitor load based on request/reply times *)
   let scale_up c stack =  
     Lwt.return (
@@ -62,12 +70,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
           (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
         if avg > h_load then (                                                        (* above that ~ %80 cpu and likely to crash*)
           (*C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);*)                      (* For debugging *)
-          Lwt.ignore_result (
-            lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
-            let res = Resolver_mirage.static irmin_store in
-            let ctx = HTTP.ctx res conduit in
-            http_post c ctx add_vm) )
-        ))
+          conduit_conn c stack add_vm
+        )) )
         
   (* Monitor idleness of unikernel *)        
   let rec scale_down c stack n =                                                     (* if idle for 5 secs then trigger action *)
@@ -75,11 +79,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       Time.sleep n >>= fun () ->   
         if !cid1 = !counter then (
           C.log c (Printf.sprintf "LOW LOAD -> destroy replica");                    (* For debugging *)           
-          Lwt.ignore_result (
-            lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
-            let res = Resolver_mirage.static irmin_store in
-            let ctx = HTTP.ctx res conduit in
-            http_post c ctx destroy_vm)
+          conduit_conn c stack destroy_vm
           )
           else C.log c (
                  Printf.sprintf "New conns in last 5s: %d" (!counter - !cid1));      (* For debugging *)
