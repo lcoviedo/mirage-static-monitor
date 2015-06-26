@@ -11,7 +11,6 @@ let blue fmt   = sprintf ("\027[36m"^^fmt^^"\027[m")
 (* Initialise values for timestamps and array*)
 let t0 = ref 0.0
 let t1 = ref 0.0
-let t2 = ref 0.0
 let i = ref 0
 let d_array = Array.make 64 0.0
 let counter = ref 0
