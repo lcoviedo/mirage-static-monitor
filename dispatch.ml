@@ -64,17 +64,16 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
             let ctx = HTTP.ctx res conduit in
             http_post c ctx) )
         end)
-
-  let start c fs stack = 
-(* Monitor idleness of unikernel *)
-    let rec scale_down n = (
+        
+  (* Monitor idleness of unikernel *)        
+  let rec scale_down c n= (                             (* if idle for 5 secs then trigger action *)
       cid1 := !counter;                                  (* !counter holds the current value of cids *)
       Time.sleep n >>= fun () ->   
         if !cid1 = !counter then C.log c (Printf.sprintf "LOW LOAD -> destroy replica") (**TODO -> write destroy request on irmin *)
-          else C.log c (Printf.sprintf "New connections in last 5 secs:%d" (!counter - !cid1)); (* For debugging *)
-      scale_down n) 
-    in
-    
+          else C.log c (Printf.sprintf "New connections in last 5 secs: %d" (!counter - !cid1)); (* For debugging *)
+      scale_down c n) 
+
+  let start c fs stack = 
    Lwt.join[(
     let read_fs name =
       FS.size fs name >>= function
@@ -127,6 +126,6 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
       let spec = H.make ~conn_closed ~callback:callback () in
       Conduit_mirage.listen conduit (`TCP 80) (H.listen spec)); 
-      (scale_down 5.)]
+      (scale_down c 5.0)]
           
 end
