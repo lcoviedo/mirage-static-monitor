@@ -8,7 +8,7 @@ let green fmt  = sprintf ("\027[32m"^^fmt^^"\027[m")
 let yellow fmt = sprintf ("\027[33m"^^fmt^^"\027[m")
 let blue fmt   = sprintf ("\027[36m"^^fmt^^"\027[m")
 
-(* Initialise values for timestamps and array*)
+(* Initialise timestamps, array and cid counters*)
 let t0 = ref 0.0
 let t1 = ref 0.0
 let i = ref 0
@@ -46,7 +46,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
     Cohttp_lwt_body.to_string req >>= fun body ->
     C.log_s c (sprintf "%s" body)
    
-  (* conduit *)
+  (* Conduit connection helper *)
   let conduit_conn c stack req=
     Lwt.ignore_result (
       lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
@@ -64,12 +64,12 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) = struct
       if !i < (Array.length d_array - 1) 
         then incr i 
         else (
-        i := 0;      
-        let avg = 
-          (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
-        if avg > h_load then (                                                        (* above that ~ %80 cpu and likely to crash*)
-          (*C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);*)                      (* For debugging *)
-          conduit_conn c stack add_vm)
+          i := 0;      
+          let avg = 
+            (Array.fold_right (+.) d_array 0.0) /. float(Array.length d_array) in
+          if avg > h_load then (                                                      (* above that ~ %80 cpu and likely to crash*)
+            (*C.log c (Printf.sprintf "HIGH LOAD.......%f" avg);*)                    (* For debugging *)
+            conduit_conn c stack add_vm)
         )
      )
         
