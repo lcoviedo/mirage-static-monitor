@@ -33,14 +33,12 @@ let stack console =
   | `Direct, false -> direct_stackv4_with_default_ipv4 console tap0
   | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
 
-(*let http_srv = http_server (conduit_direct ~tls:true (stack default_console))*)
-
 let main =
-  foreign "Dispatch.Main" (console @-> kv_ro @-> stackv4 @->(* http @->*) job)
+  foreign "Dispatch.Main" (console @-> kv_ro @-> stackv4 @-> network @-> job)
 
 let () =
   add_to_ocamlfind_libraries ["re.str";"mirage-http";];
   add_to_opam_packages ["re";"mirage-http";];
   let sv4 = stack default_console in
-  let job =  [ main $ default_console $ fs $ sv4 (*$ http_srv*)] in
-  register "www-static-irmin" job
+  let job =  [ main $ default_console $ fs $ sv4 $ tap0 ] in
+  register "static" job
