@@ -1,5 +1,3030 @@
+
 <html>
+
+<head>
+<!--<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">  -->
+
+<title>Large HTML page with images</title>
+
+<!-- The following link block and style block present methods how to load external CSS documents.
+     The link tag forces an immediate download of the CSS document whereas the import clause in
+     the style block has the document downloaded some random time later.  -->
+
+<link href="htmlparser/sections.css" rel="stylesheet" type="text/css">
+
+
+<!--
+<style type="text/css">
+@import url(htmlparser/sections.css);
+</style> 
+-->
+
+</head>
+
 <body>
-<h1>Hello Mirage World!</h1>
+<div align="center"><center>
+<h1 class="fore">When to load CSS</h1>
+
+<table border="0" cellspacing="5" width="100%" bgcolor="#F2F2FF">
+  <tr>
+    <td><p align="left"><font color="#000080" size="5" face="Tahoma"><strong>Large HTML page
+    with Images</strong></font></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<p><strong><small><font face="Verdana">This page shall test if the recorder generates
+scripts with requests in correct order. It includes images in sequential order: stadyn_image1.gif
+through stadyn_image10.gif</font></small></strong></p>
+
+<hr>
+
+<p><img src="stadyn_image1.gif" width="70" height="70" alt="stadyn_image1.gif (6512 bytes)"><br>
+stadyn_image1</p>
+
+<p><img src="stadyn_image2.gif" width="70" height="70" alt="stadyn_image2.gif (5983 bytes)"><br>
+stadyn_image2</p>
+
+<p align="center"><b><font SIZE="6">Open Financial Exchange<br>
+Specification 1.0</font></b> </p>
+
+<p align="center"><b><font SIZE="2">February 14, 1997<br>
+</font></b></p>
+
+<p align="center"><b><font SIZE="2">© 1997 CheckFree Corp., Intuit Inc., Microsoft Corp.
+All rights reserved<br>
+<br>
+<br>
+</font></b></p>
+
+<p align="center"><i><b><font SIZE="5">Chapters 1 - 10<br>
+<br>
+<br>
+<br>
+<br>
+</font></b></i></p>
+
+<h1><img src="stadyn_image3.gif" width="70" height="70" alt="stadyn_image3.gif (6537 bytes)"><br>
+<font SIZE="5">stadyn_image3</font></h1>
+
+<h1><img src="stadyn_image4.gif" width="70" height="70" alt="stadyn_image4.gif (6028 bytes)"><br>
+stadyn_image4</h1>
+
+<p><img src="stadyn_image5.gif" width="70" height="70" alt="stadyn_image5.gif (4068 bytes)"><br>
+stadyn_image5</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<h1><a NAME="_Toc371408167"><font SIZE="5">Contents</font></a></h1>
+
+
+
+<ol>
+  <li><a NAME="_Toc380493239"><font SIZE="6" FACE="Arial">Overview</font></a> </li>
+  <li><a NAME="_Toc380493240"><font SIZE="5" FACE="Arial">Introduction</font></a> </li>
+</ol>
+
+<ol>
+  <li><a NAME="_Toc380493241"><font SIZE="4" FACE="Arial">Design Principles</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The following principles were used in designing Open Financial Exchange:</font>
+</p>
+
+<p><font SIZE="1" FACE="Wingdings">l</font><font SIZE="2"> </font><font SIZE="2"
+FACE="Arial"><b>Broad</b> <b>Range of Financial Activities</b></font><font SIZE="2"> -
+Open Financial Exchange provides support for a <i><b>broad</b></i> range of financial
+activities. Open Financial Exchange 1.0 specifies the following services:</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Bank statement download</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Credit card statement download</font>
+</p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Funds transfers including
+recurring transfers</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Consumer payments, including
+recurring payments</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Business payments, including
+recurring payments</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Brokerage and mutual fund
+statement download, including transaction history, current holdings and balances</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">l</font><font SIZE="2"> </font><font SIZE="2"
+FACE="Arial"><b>Broad</b> <b>Range of Financial Institutions</b></font><font SIZE="2"> -
+Open Financial Exchange supports communication with a <i><b>broad</b></i> range of
+financial institutions (FIs), including:</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Banks</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Brokerage houses</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Merchants</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Processors</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Financial advisors</font> </p>
+
+<p><font SIZE="1" FACE="Wingdings">n</font><font SIZE="2"> Government agencies</font> </p>
+
+<ol>
+  <li><font SIZE="5" FACE="Arial"><a NAME="_Toc380493242">Open Financial Exchange </a>at a
+    Glance</font> </li>
+</ol>
+
+<p><font SIZE="2">The design of Open Financial Exchange is as a client and server system.
+An end-user uses a client application to communicate with a server at a financial
+institution. The form of communication is requests from the client to the server and
+responses from the server back to the client.</font> </p>
+
+<p><font SIZE="2">Open Financial Exchange uses the Internet Protocol (IP) suite to provide
+the communication channel between a client and a server. IP protocols are the foundation
+of the public Internet and a private network can also use them.</font> 
+
+
+<pre>
+<font SIZE="1">POST http://www.fi.com/ofx.cgi HTTP/1.0
+User-Agent:MyApp 5.0
+Content-Type: application/x-ofx
+Content-Length: 1032
+
+OFXHEADER:100
+</font><font
+SIZE="2">DATA:OFXSGML
+VERSION:100
+SECURITY:1
+ENCODING:USASCII
+
+&lt;OFX&gt;
+... Open Financial Exchange requests ...
+&lt;/OFX&gt;</font>
+</pre>
+
+<p><font SIZE="2">A blank line defines the separation between the HTTP headers and the
+start of the actual Open Financial Exchange data. A blank line also separates the Open
+Financial Exchange headers and the actual response. (See Chapter 2, for more information.)</font>
+</p>
+
+<p><font SIZE="2">The structure of a response is similar to the request, with the first
+line containing the standard HTTP result, as shown next. The content length is given in
+bytes.</font> </p>
+
+<pre>
+<font SIZE="1">HTTP 1.0 200 OK
+Content-Type: application/x-ofx
+Content-Length: 8732
+
+OFXHEADER:100
+</font><font
+SIZE="2">DATA:OFXSGML
+VERSION:100
+SECURITY:1
+ENCODING:USASCII
+
+&lt;OFX&gt;
+... Open Financial Exchange responses ...
+&lt;/OFX&gt;</font>
+</pre>
+
+<ol>
+  <li><font SIZE="4" FACE="Arial"><a NAME="_Toc380493244">Request and Response</a> Model</font>
+  </li>
+</ol>
+
+<p><font SIZE="2">The actual file Open Financial Exchange sends is without any extra white
+space between tags.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493245"><font SIZE="5" FACE="Arial">Conventions</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The conventions used in the detailed descriptions include: </font>
+
+<ul>
+  <li><font SIZE="2">Required tags are in <b>bold</b>. Regular face indicates tags that are
+    optional. Required means that a client will always include a tag in a request, and a
+    server must always include a tag in a response.</font> </li>
+  <li><font SIZE="2"><i>Italic </i>shows a required or optional aggregate from a set of
+    possible aggregates. </font></li>
+  <li><font SIZE="2">Required tags occur once unless noted as one or more in the description,
+    in which case the specification allows multiple occurrences. </font></li>
+  <li><font SIZE="2">Optional tags occur once if present unless noted as zero or more in the
+    description, in which case the specification allows multiple occurrences.</font> </li>
+  <li><font SIZE="2">Allowable specific values are listed, where applicable.</font> </li>
+  <li><font SIZE="2">A-<i>n</i> or N-<i>n</i>, specify those values that take general
+    alphanumeric or pure numeric type values, where <i>n</i> indicates the maximum size. </font></li>
+  <li><font SIZE="2">References to certain common value types, such as a dollar amount, are by
+    name. Chapter 3 lists value types that can be referenced by name.</font> </li>
+</ul>
+
+<pre>
+<font SIZE="1">HTTP headers
+MIME type application/x-ofx
+Open Financial Exchange headers
+Open Financial Exchange SGML block 1</font>
+</pre>
+
+<p><font SIZE="2">A more complex file that contained multiple Open Financial Exchange data
+blocks and additional Open Financial Exchange data would have this form:</font> </p>
+
+<pre>
+<font SIZE="1">HTTP headers
+MIME type multipart/x-mixed-replace; boundary =--boundary-
+---boundary---
+MIME type application/x-ofx
+</font><font
+SIZE="2">	Open Financial Exchange headers
+	Open Financial Exchange SGML block 1
+	Open Financial Exchange SGML block 2
+---boundary---
+	MIME type image/jpeg
+		FI logo</font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493247"><font SIZE="5" FACE="Arial">HTTP Headers</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Data delivered by way of HTTP places the standard HTTP result code on
+the first line. HTTP defines a number of status codes. Servers can return any standard
+HTTP result. However, FIs should expect clients to collapse these codes into the following
+three cases:</font> </p>
+
+<p><i><b>NOTE:</b> Open Financial Exchange returns a code 400 only if it cannot parse the
+file. Open Financial Exchange handles content errors such as wrong PIN, or invalid
+account, by returning a valid Open Financial Exchange response along with code 200.</i> </p>
+
+<p>Open Financial Exchange requires the following HTTP standard headers: </p>
+
+<pre>
+
+</pre>
+
+<p><font SIZE="2">When responding with multi-part MIME, the main type will be
+multi-part/x-mixed-replace; <br>
+one of the parts will use application/x-ofx.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493248"><font SIZE="5" FACE="Arial">Open Financial Exchange Headers</font></a>
+  </li>
+</ol>
+
+<p><font SIZE="2">The intent of Open Financial Exchange is for use with a variety of
+transports and to provide sufficient version control capabilities for future expansion. To
+support this goal, the contents of an Open Financial Exchange file consist of a simple set
+of headers followed by contents defined by that header. &quot;File format&quot; means the
+entire content after removal of any transport headers. The HTTP transport described in
+this document, means without the HTTP and MIME headers.</font> </p>
+
+<p><font SIZE="2">The Open Financial Exchange headers are in a simple <i>tag:value</i>
+syntax and terminated by a blank line. Open Financial Exchange always sends headers
+unencrypted, even if there is application-level encryption in use for the remaining
+contents. The first entry will always be OFXHEADER with a version number. This entry will
+help identify the contents as an Open Financial Exchange file, and provides the version of
+the Open Financial Exchange headers that follow (not of the content itself). For example:</font>
+</p>
+
+<pre>
+<font SIZE="1">OFXHEADER:100</font>
+</pre>
+
+<p><font SIZE="2">This document defines version 1.0 of the headers to contain at least the
+following additional tags:</font> </p>
+
+<pre>
+<font SIZE="1">DATA:OFXSGML
+VERSION:100
+SECURITY: 
+ENCODING:
+</font><font SIZE="2">CHARSET:
+COMPRESSION:
+OLDFILEUID:
+NEWFILEUID:</font>
+</pre>
+
+<p><font SIZE="2">The data tag identifies the contents as being in OFX SGML form. VERSION
+identifies the version type as OFXSGML data. In the case of OFXSGML, it translates to the
+version of the Document Type Definition (DTD) that it uses for parsing. The ENCODING and
+CHARSET tags define the interpretation of the character data. See Chapter 5,
+&quot;International Support&quot; for more information on these tags. Chapter 4 describes
+the security tag. A future version of this specification will define compression.</font> </p>
+
+<p><font SIZE="2">Open Financial Exchange uses OLDFILEUID and NEWFILEUID to support error
+recovery. They are not present when clients are not requesting error recovery. (See
+Chapter 6, &quot;Data Synchronization&quot;)</font> </p>
+
+<p><font SIZE="2">A blank line follows the last tag. Then (for type OFXSGML), the
+SGML-readable data begins with the &lt;OFX&gt; tag.</font> </p>
+
+<p><font SIZE="2"><i><b>NOTE:</b> Here, VERSION provides the overall version of the DTD.
+The &lt;OFX&gt; block describes the specific message set versions used, shown later in
+this chapter.</i></font> 
+
+<ol>
+  <li><a NAME="_Toc380493249"><font SIZE="4" FACE="Arial">The Meaning of Version Numbers</font></a>
+  </li>
+</ol>
+
+<p><font SIZE="2">The OFXHEADER value should only change its major number if an existing
+client is unable to process the new header. This can occur because of a complete syntax
+change in a header, or a significant change in the semantics of an existing tag-not the
+entire response. You can add new tags as long as clients can function without
+understanding them.</font> </p>
+
+<p><font SIZE="2">You should add new values for a data tag only when you introduce an
+entirely new syntax. In the case of OFXSGML, a new syntax would have to be non-SGML
+compliant to warrant a new data value. It is possible that there will be more than one
+syntax in use at the same time to meet different needs.</font> </p>
+
+<p><font SIZE="2">The intent of the header version tag is to identify syntactic changes.
+In the case of OFXSGML, this corresponds to the DTD. Purely for identification purposes,
+each change will increment the minor number of the version tag. If you introduce an
+incompatible change so that an older DTD can not parse the file, the major number will
+change. See the general discussion of message sets and version control, later in this
+chapter.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493250"><font SIZE="5" FACE="Arial">SGML Details</font></a> </li>
+  <li><a NAME="_Toc380493251"><font SIZE="4" FACE="Arial">Compliance</font></a> </li>
+</ol>
+
+<p><font SIZE="2">SGML is the basis for Open Financial Exchange. There is a DTD that
+formally defines the SGML wire format. However, Open Financial Exchange is not completely
+SGML-<i>compliant</i> because the specification allows unrecognized tags to be present. It
+requires clients and servers to skip over the unrecognized material. That is, if
+&lt;XYZ&gt;qqq&lt;/XYZ&gt; appeared and a client or server cannot recognize &lt;XYZ&gt;,
+the server should ignore that tag and its enclosed data. A fully-compliant SGML parser
+would not <i>validate</i> an Open Financial Exchange document if it contained any tags
+that the DTD does not define.</font> </p>
+
+<p><font SIZE="2">Although SGML is the basis for the specification, and the specification
+is largely compliant with SGML, do not assume Open Financial Exchange supports any SGML
+features not documented in this specification. The intent is to allow parsing to be as
+simple as possible, while retaining compatibility with the SGML world.</font> 
+
+
+<ol>
+  <li><a NAME="_Toc380493261"><font SIZE="4" FACE="Arial">PIN Change &lt;PINCHRQ&gt;
+    &lt;PINCHRS&gt;</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The signon sends a request to change a customer password as a separate
+request. The transaction request &lt;PINCHTRNRQ&gt; aggregate contains &lt;PINCHRQ&gt;.
+Responses are also inside transaction responses &lt;PINCHTRNRS&gt;. </font></p>
+
+
+<p><font SIZE="2">Open Financial Exchange clients use the profile to learn the
+capabilities of an Open Financial Exchange server. This information includes general
+properties such as account types supported, user password requirements, specific messages
+supported, and how the client should batch requests and where to send the requests. A
+client obtains a portion of the profile when a user first selects an FI. The client
+obtains the remaining information prior to sending any actual requests to that FI. The
+server uses a timestamp to indicate whether the server has updated the profile, and the
+client checks periodically to see if it should obtain a new profile.</font> </p>
+
+<p><font SIZE="2">In more detail, a profile response contains the following sections,
+which a client can request independently:</font> 
+
+<ul>
+  <li><font SIZE="2">Message Sets - list of services and any general attributes of those
+    services. Message sets are collections of messages that are related functionally. They are
+    generally subsets of what users see as a service.</font> </li>
+  <li><font SIZE="2">Signon realms - FIs can require different signons (user ID and/or
+    password) for different message sets. Because there can only be one signon per &lt;OFX&gt;
+    block, a client needs to know which signon the server requires and then provide the right
+    signon for the right batch of messages.</font> </li>
+</ul>
+
+<p><font SIZE="2">The profile message is itself a message set. In files, Open Financial
+Exchange uses the &lt;PROFMSGSV1&gt; aggregate to identify this profile message set.</font>
+</p>
+
+<p><font SIZE="2">The following sections describe the general use of profile information. </font>
+
+<ol>
+  <li><a NAME="_Toc380493312"><font SIZE="4" FACE="Arial">Message Sets</font></a> </li>
+</ol>
+
+<p><font SIZE="2">A message set is a collection of related messages. For example, Chapter
+11, &quot;Banking,&quot; defines several message sets: statement download, credit card
+statement download, intrabank transfers, and so forth. A server routes all of the messages
+in a message set to a single URL and merges their versions together.</font> </p>
+
+<p><font SIZE="2">Clients and servers generally use message sets as the granularity to
+decide what functionality they will support. A &quot;banking&quot; server can choose to
+support the statement download and intrabank transfer message sets, but not the wire
+transfer message set. Attributes are available in many cases to further define how Open
+Financial Exchange supports a message set.</font> </p>
+
+<p><font SIZE="2">Each portion of the Open Financial Exchange specification that defines
+messages also defines the message set to which that the messages belongs. This includes
+what additional attributes are available for those messages, and whether Open Financial
+Exchange requires the message set or it is optional.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493313"><font SIZE="4" FACE="Arial">Version Control</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Message sets are the basis of version control. Over time there will be
+new versions of the message sets, and at any given time servers will likely want to
+support more than one version of a message set. Clients should also be capable of
+supporting as many versions as possible. Through the profile, clients discover which
+versions are supported for each message set. Considering the client capabilities, it
+exchanges messages at the highest common level for each message set. </font></p>
+
+<p><font SIZE="2">For the Open Financial Exchange-SGML data format, there is a single DTD
+for all message sets. Its version advances when any <i>syntactic</i> change is made to any
+of the message sets. (It is possible to make a <i>semantic</i> change that would not even
+require a change in syntax. A change in rules, for example, that would change the version
+of the message set without changing the DTD.) A single DTD cannot have two different
+definitions for the same aggregate. There are limitations to how a server that uses true
+DTD-based parsing can handle multiple versions of a message at the same time.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493314"><font SIZE="4" FACE="Arial">Batching and Routing</font></a> </li>
+</ol>
+
+<p><font SIZE="2">To allow FIs to set up different servers for different message sets,
+different versions, or to directly route some messages to third party processors, message
+sets define the URL to which a server sends messages in that message set. Each version of
+a message set can have a different URL. In the common case where many or all message sets
+are sent to a single URL, clients will consolidate messages across compatible message
+sets. Clients can consolidate when:</font> 
+
+<ul>
+  <li><font SIZE="2">Message sets have the same URL</font> </li>
+  <li><font SIZE="2">Message sets have a common security level</font> </li>
+  <li><font SIZE="2">Message sets have the same signon realm</font> </li>
+</ul>
+
+<ol>
+  <li><a NAME="_Toc380493315"><font SIZE="5" FACE="Arial">Profile Request</font></a> </li>
+</ol>
+
+<p><font SIZE="2">A profile request indicates which profile components a client desires.
+It also indicates what the client's routing capability is. Profiles returned by the FI
+must be compatible with the requested routing style, or it returns an error.</font> </p>
+
+<p><font SIZE="2">Profile requests are not subject to synchronization. Use the
+&lt;PROFTRNRQ&gt; transaction tag.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="366"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><font SIZE="1">&lt;<b>PROFRQ</b>&gt;</font></td>
+    <td WIDTH="366"><font SIZE="2">Profile-request aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;CLIENTROUTING&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Identifies client routing capabilities, see table below</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;DTPROFUP&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Date and time client last received a profile update</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/PROFRQ&gt;</font></b></td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="366"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><font SIZE="1">NONE</font></td>
+    <td WIDTH="366"><font SIZE="2">Client cannot perform any routing. All URLs must be the
+    same. All message sets share a single signon realm.</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><font SIZE="1">SERVICE</font></td>
+    <td WIDTH="366"><font SIZE="2">Client can perform limited routing. See details below.</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><font SIZE="1">MSGSET</font></td>
+    <td WIDTH="366"><font SIZE="2">Client can route at the message-set level. Each message set
+    may have a different URL and/or signon realm.</font> </td>
+  </tr>
+</table>
+
+<p>The intent of the SERVICE option for client routing is to support clients that can
+route bill payment messages to a separate URL from the rest of the messages. Because the
+exact mapping of message sets to the general concept of bill payment can vary by client
+and by locale, this specification does not provide precise rules for the SERVICE option.
+Each client will define its requirements. <br>
+
+<ol>
+  <li><a NAME="_Toc380493316"><font SIZE="5" FACE="Arial">Profile Response</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The response includes message set descriptions, signon information, and
+general contact information.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="144"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="354"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;PROFRS&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Profile-response aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;MSGSETLIST&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Beginning list of message set information</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;<b><i>XXXMSGSET</i>&gt;</b></font></b> </td>
+    <td WIDTH="354"><font SIZE="2">One or more message set aggregates</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/<b><i>XXXMSGSET</i>&gt;</b></font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/MSGSETLIST&gt;</font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SIGNONINFOLIST&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Beginning of signon information</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SIGNONINFO&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">One or more signon information aggregates</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/SIGNONINFO&gt;</font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/SIGNONINFOLIST&gt;</font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;DTPROFUP&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Time this was updated on server, <i>datetime</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;FINAME&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Name of institution, <i>A-32</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;ADDR1&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">FI address, line 1</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1" FACE="Arial">&lt;ADDR2&gt;</font> </td>
+    <td WIDTH="354"><font SIZE="2">FI address, line 2</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1" FACE="Arial">&lt;ADDR3&gt;</font> </td>
+    <td WIDTH="354"><font SIZE="2">FI address, line 3</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;CITY&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">FI address city</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;STATE&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">FI address state</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;POSTALCODE&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">FI address postal code</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;COUNTRY&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">FI address country</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1" FACE="Arial">&lt;CSPHONE&gt;</font> </td>
+    <td WIDTH="354"><font SIZE="2">Customer service telephone number, <i>A-32</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1" FACE="Arial">&lt;TSPHONE&gt;</font> </td>
+    <td WIDTH="354"><font SIZE="2">Technical support telephone number, <i>A-32</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1" FACE="Arial">&lt;FAXPHONE&gt;</font> </td>
+    <td WIDTH="354"><font SIZE="2">Fax number, <i>A-32</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1" FACE="Arial">&lt;URL&gt;</font> </td>
+    <td WIDTH="354"><font SIZE="2">URL for general information about FI (not for sending data)
+    <i>URL</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1" FACE="Arial">&lt;EMAIL&gt;</font> </td>
+    <td WIDTH="354"><font SIZE="2">E-mail address for FI, <i>A-32</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SYNCMODE&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">FULL for full synchronization capability <br>
+    LITE for lite synchronization capability</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;RESPFILEER&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Y if server supports response-file based error recovery, <i>Boolean</i></font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/PROFRS&gt;</font></b></td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+</table>
+
+<p>See the Chapter 6 for more information on &lt;SYNCMODE&gt; and &lt;RESPFILEER&gt;. 
+
+<ol>
+  <li><font SIZE="4" FACE="Arial"><a NAME="_Toc380493317">Message Set</a> </font></li>
+</ol>
+
+<p><font SIZE="2">An aggregate describes each message set supported by an FI. Message sets
+in turn contain an aggregate for each version of the message set that is supported. For a
+message set named <i>XXX</i>, the convention is to name the outer aggregate &lt;<i>XXX</i>MSGSET&gt;
+and the tag for each version &lt;<i>XXX</i>MSGSETVn&gt;. The reason for message
+set-specific aggregates is that the set of attributes depends on the message set. These
+can change from version to version, so there are version-specific aggregates as well.</font>
+</p>
+
+<p><font SIZE="2">The general form of the response is:</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="144"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="354"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;<b><i>XXXMSGSET</i>&gt;</b></font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Service aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;<b><i>XXXMSGSETVn</i>&gt;</b></font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Version-of-message-set aggregate, 1 or more</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/<b><i>XXXMSGSETVn</i>&gt;</b></font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/<b><i>XXXMSGSET</i>&gt;</b></font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+</table>
+
+<p>The &lt;<b><i>XXX</i>MSGSETVn</b>&gt; aggregate has the following form:<br>
+</p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="144"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="354"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;<b><i>XXX</i>MSGSETVn&gt;</b></font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Message-set-version aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Common message set information</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1">message-set specific</font></td>
+    <td WIDTH="354"><font SIZE="2">Zero or more attributes specific to this version of this
+    message set, as defined by each message set</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/<b><i>XXX</i>MSGSETVn&gt;</b></font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+</table>
+
+<p>The common message set information &lt;MSGSETCORE&gt; is as follows: <br>
+</p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="144"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="354"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Common-message-set-information aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;VER&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Version number, <i>N-5 </i>(version 1.0 formatted as 100)</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;URL&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">URL where messages in this set are to be sent</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;OFXSEC&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Security level required for this message set; see Chapter 4</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;TRANSPSEC&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Y if transport security must be used, N if not used; <i>Boolean</i></font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SIGNONREALM&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Signon realm to use with this message set</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;LANGUAGE&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">One or more languages supported</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493318"><font SIZE="4" FACE="Arial">Signon Realms</font></a> </li>
+</ol>
+
+<p><font SIZE="2">A signon realm identifies a set of messages that can be accessed using
+the same password. Realms are used to disassociate signons from specific services,
+allowing FIs to require different signons for different message sets. In practice, FIs
+will want to use the absolute minimum number of realms possible to reduce the user's
+workload.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="144"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="354"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SIGNONINFO&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Signon-information aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SIGNONREALM&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Identifies this realm</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;MIN&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Minimum number of password characters</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;MAX&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Max number of password characters</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;ALPHA&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Y if alphabetic characters are allowed, <i>Boolean</i></font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;NUMERIC&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Y if numeric characters are allowed, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;CASESEN&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Y if password is case-sensitive, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SPECIAL&gt;</font></b> </td>
+    <td WIDTH="354"><font SIZE="2">Y if special characters are allowed, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;SPACES&gt;</font></b></td>
+    <td WIDTH="354"><font SIZE="2">Y if spaces are allowed, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><b><font SIZE="1">&lt;/SIGNONINFO&gt;</font></b> </td>
+    <td WIDTH="354">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493319"><font SIZE="4" FACE="Arial">Status Codes</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="144"><i><font SIZE="1">Value</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="354"><i><font SIZE="2">Meaning</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1">0</font></td>
+    <td WIDTH="354"><font SIZE="2">Success (INFO)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="144"><font SIZE="1">2000</font></td>
+    <td WIDTH="354"><font SIZE="2">General error (ERROR)</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493320"><font SIZE="5" FACE="Arial">Profile Message Set Profile
+    Information</font></a> </li>
+</ol>
+
+<p><img src="stadyn_image8.gif" width="214" height="214" alt="stadyn_image8.gif (22120 bytes)"><br>
+stadyn_image8</p>
+
+<p><font SIZE="2">&nbsp;</font></p>
+
+<p><font SIZE="2">The profile message set functions the same way as all other message
+sets; therefore, it contains a profile description for that message set. Because
+&lt;PROFMSGSET&gt; is always part of a message set response, it is described here. Servers
+that support profile information must include the &lt;PROFMSGSET&gt; as part of the
+profile response &lt;MSGSETLIST&gt;. There are no attributes, but the aggregate must be
+present to indicate support for the message set.<br>
+</font></p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;PROFMSGSET&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Message-set-profile-information aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;PROFMSGSETV1&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Opening tag for V1 of the message set profile information</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Common message set information</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/PROFMSGSETV1&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/PROFMSGSET&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493321"><font SIZE="6" FACE="Arial">Activation &amp; Account Information</font></a>
+  </li>
+  <li><a NAME="_Toc380493322"><font SIZE="5" FACE="Arial">Overview</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The Signup message set defines three messages to help users get setup
+with their FI:</font> 
+
+<ul>
+  <li><font SIZE="2">Enrollment - informs FI that a user wants to use Open Financial Exchange
+    and requests that a password be returned</font> </li>
+  <li><font SIZE="2">Accounts - asks the FI to return a list of accounts, and the services
+    supported for each account</font> </li>
+  <li><font SIZE="2">Activation - allows a client to tell the FI which services a user wants
+    on each account</font> </li>
+</ul>
+
+<p><font SIZE="2">There is also a message to request name and address changes.</font> </p>
+
+<p><font SIZE="2">Clients use the account information request on a regular basis to look
+for changes in a user's account information. A timestamp is part of the request so that a
+server has only to report new changes. Account activation requests are subject to data
+synchronization, and will allow multiple clients to learn how the other clients have been
+enabled.</font> </p>
+
+<p><font SIZE="2">In Open Financial Exchange files, the &lt;SIGNUPMSGSV1&gt; aggregate
+identifies the Signup message.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493323"><font SIZE="5" FACE="Arial">Approaches to User Sign-Up with Open
+    Financial Exchange</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The message sets in this chapter are designed to allow both FIs and
+clients to support a variety of sign-up procedures. There are four basic steps a user
+needs to go through to complete the sign-up:</font> 
+
+<ol>
+  <li><font SIZE="2"><b>Select the FI</b>. Open Financial Exchange does not define this step
+    or provide message sets to support it. Client developers and FIs can let a user browse or
+    search this information on a web site, or might define additional message sets to do this
+    within the client. At the conclusion of this step, the client will have some minimal
+    profile information about the FI, including the set of services supported and the URL to
+    use for the next step.</font> </li>
+  <li><font SIZE="2"><b>Enrollment and password acquisition.</b> In this step, the user
+    identifies and authenticates itself to the FI <i>without a password</i>. In return, the
+    user obtains a password (possibly temporary) to use with Open Financial Exchange. FIs can
+    perform this entire step over the telephone, through a combination of telephone requests
+    and a mailed response, or at the FI web site. FIs can also use the Open Financial Exchange
+    enrollment message to do this by means of the client. The response can contain a temporary
+    password or users can wait for a mailed welcome letter containing the password.</font> </li>
+  <li><font SIZE="2"><b>Account Information.</b> In this step, the user obtains a list of
+    accounts available for use with Open Financial Exchange, and which specific services are
+    available for each account. Even if users have enrolled over the telephone, clients will
+    still use this message set to help users properly set up the accounts within the client.
+    Clients periodically check back with the FI for updates.</font> </li>
+  <li><font SIZE="2"><b>Service Activation.</b> The last step is to activate specific services
+    on specific accounts. The activation messages support this step. Synchronization is
+    applied to these messages to insure that other clients are aware of activated services.</font>
+  </li>
+</ol>
+
+<p><font SIZE="2">The combination of media-interface through which an FI accomplishes
+these steps can vary. FIs might wish to do steps two through four over the telephone.
+Clients will still use Open Financial Exchange messages in steps 3 and 4 to automatically
+set up the client based on the choices made by the user over the phone. Other FIs might
+wish to have the entire user experience occur within the client. Either way, the Open
+Financial Exchange sign-up messages support the process.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493324"><font SIZE="5" FACE="Arial">Users and Accounts</font></a> </li>
+</ol>
+
+<p><font SIZE="2">To support the widest possible set of FIs, Open Financial Exchange
+assumes that individual users and accounts are in a many-to-many relationship. Consider a
+household with three accounts:</font> 
+
+<ul>
+  <li><font SIZE="2">Checking 1 - held individually by one spouse</font> </li>
+  <li><font SIZE="2">Checking 2 - held jointly by both</font> </li>
+  <li><font SIZE="2">Checking 3 - held individually by the other spouse</font> </li>
+</ul>
+
+<p><font SIZE="2">Checking 2 should be available to either spouse, and the spouse holding
+Checking 1 should be able to see both Checking 1 and 2.</font> </p>
+
+<p><font SIZE="2">Open Financial Exchange expects FIs to give each user their own user ID
+and password. Each user will go through the enrollment step separately. A given account
+need only be activated once for a service; not once for each user. Clients will use the
+account information and activation messages to combine information about jointly-held
+accounts.</font> </p>
+
+<p><font SIZE="2">If an FI prefers to have a single user ID and password per household or
+per master account, they will have to make this clear to users through the enrollment
+process. It is up to the FI to assign a single user ID and password that can access all
+three of the checking accounts described above.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493325"><font SIZE="5" FACE="Arial">Enrollment and Password Acquisition
+    &lt;ENROLLRQ&gt; &lt;ENROLLRS&gt;</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The main purpose of the enrollment message is to communicate a user's
+intent to access the FI by way of Open Financial Exchange and to acquire a password for
+future use with Open Financial Exchange. Some FIs might return a user ID and an initial
+password in the enrollment response, while others will send them by way of regular mail. </font></p>
+
+<p><font SIZE="2"><i><b>NOTE:</b> Because the server does not know the user ID and
+password when the client sends the enrollment request, the &lt;SONRQ&gt; will not contain
+a valid user ID or password. The enrollment message accepts standard user identification
+information. </i></font></p>
+
+<p><font SIZE="2">Enrollment requests are not subject to synchronization. If the client
+does not receive a response, it will simply re-request the enrollment. If a user
+successfully enrolls from another client before the first client obtains a response, the
+server should respond to subsequent requests from the first client with status code: </font></p>
+
+<pre>
+<font SIZE="1">13501 - user already enrolled.</font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493326"><font SIZE="4" FACE="Arial">User IDs</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The Open Financial Exchange &lt;SONRQ&gt; requires a user ID to uniquely
+identify a user to an FI. Many FIs in the United States use social security numbers (SSNs)
+as the ID. Others create IDs that are unrelated to the users' SSNs. FIs can have an
+existing user IDs that they use for other online activities that they wish to use for Open
+Financial Exchange as well. They might also create new IDs specifically for Open Financial
+Exchange. Finally, some FIs might assign IDs while others might allow users to create
+them. </font></p>
+
+<p><font SIZE="2">Because users do not usually know either their Open Financial Exchange
+sign-on user ID or their password at time of enrollment, the enrollment response is
+designed to return both. The enrollment request allows users to optionally provide a user
+ID, which an FI can interpret as their existing online ID or a suggestion for what their
+new user ID should be. It is recommended that the enrollment process explains ID syntax to
+users.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493327"><font SIZE="4" FACE="Arial">Enrollment Request</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The enrollment request captures enough information to identify and
+authenticate a user as being legitimate and that it has a relationship with the FI. </font></p>
+
+<p><font SIZE="2">FIs might require that an account number be entered as part of the
+identification process. However, this is discouraged since the account information request
+is designed to automatically obtain all account information, avoiding the effort and
+potential mistakes of a user-supplied account number. </font></p>
+
+<p><font SIZE="2">It is <b>RECOMMENDED</b> that FIs provide detailed specifications for
+IDs and passwords along with information about the services available when a user is
+choosing an FI.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="180"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="318"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;ENROLLRQ&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Enrollment-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;FIRSTNAME&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">First name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;MIDDLENAME&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Middle name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;LASTNAME&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Last name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;ADDR1&gt;</font></b></td>
+    <td WIDTH="318"><font SIZE="2">Address line 1</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ADDR2&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Address line 2</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ADDR3&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Address line 3</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;CITY&gt;</font></b></td>
+    <td WIDTH="318"><font SIZE="2">City</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;STATE&gt;</font></b></td>
+    <td WIDTH="318"><font SIZE="2">State or province</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;POSTALCODE&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Postal code</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;COUNTRY&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">3-letter country code from ISO/DIS-3166</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;DAYPHONE&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Daytime telephone number</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;EVEPHONE&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Evening telephone number</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;EMAIL&gt;</font></b></td>
+    <td WIDTH="318"><font SIZE="2">Electronic e-mail address</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;USERID&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Actual user ID if already known, or preferred user ID if
+    user can pick</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;TAXID&gt;</font></b></td>
+    <td WIDTH="318"><font SIZE="2">ID used for tax purposes (such as SSN), may be same as user
+    ID</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;SECURITYNAME&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Mother's maiden name or equivalent</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;DATEBIRTH&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Date of birth</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;<i>ACCTFROM&gt;</i></font> </td>
+    <td WIDTH="318"><font SIZE="2">An account description aggregate for one existing account
+    at the FI, for identification purposes only. Can be &lt;BANKACCTFROM&gt;,
+    &lt;INVACCTFROM&gt;, etc.</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;/<i>ACCTFROM</i>&gt;</font> </td>
+    <td WIDTH="318">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;/ENROLLRQ&gt;</font></b> </td>
+    <td WIDTH="318">&nbsp;</td>
+  </tr>
+</table>
+
+<p>This enrollment request is intended for use only by individuals. Business enrollment
+will be defined in a later release. 
+
+<ol>
+  <li><a NAME="_Toc380493328"><font SIZE="4" FACE="Arial">Enrollment Response</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The main purpose of the enrollment response is to acknowledge the
+request. In those cases where FIs permit delivery of an ID and a temporary password, the
+response also provides for this. Otherwise the server will send the real response to the
+user by way of regular mail, electronic mail, or over the telephone. If enrollment is
+successful, but the server does not return the ID and password in the response, a server
+is REQUIRED to use status code 10 and provide some information to the user by means of the
+&lt;MESSAGE&gt; element in the &lt;STATUS&gt; aggregate about what to expect next.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="180"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="318"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;ENROLLRS&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Enrollment-response aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;TEMPPASS&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Temporary password</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1">&lt;USERID&gt;</font></td>
+    <td WIDTH="318"><font SIZE="2">User ID</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;DTEXPIRE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Time the temporary password expires (if &lt;TEMPPASS&gt;
+    included)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;/ENROLLRS&gt;</font></b> </td>
+    <td WIDTH="318">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493329"><font SIZE="4" FACE="Arial">Enrollment Status Codes</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="72"><i><font SIZE="1">Code</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="300"><i><font SIZE="2">Meaning</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">0</font></td>
+    <td WIDTH="300"><font SIZE="2">Success (INFO)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2000</font></td>
+    <td WIDTH="300"><font SIZE="2">General error (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">13000</font></td>
+    <td WIDTH="300"><font SIZE="2">User ID &amp; password will be sent out-of-band (INFO)</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">13500</font></td>
+    <td WIDTH="300"><font SIZE="2">Unable to enroll (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">13501</font></td>
+    <td WIDTH="300"><font SIZE="2">User already enrolled (ERROR)</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493330"><font SIZE="4" FACE="Arial">Examples</font></a><font SIZE="2">An
+    enrollment request:</font> </li>
+</ol>
+
+<pre>
+<font SIZE="1">&lt;ENROLLTRNRQ&gt;
+	&lt;TRNUID&gt;12345  
+	&lt;ENROLLRQ&gt;
+		&lt;FIRSTNAME&gt;Joe
+		&lt;MIDDLENAME&gt;Lee
+		&lt;LASTNAME&gt;Smith
+		&lt;ADDR1&gt;21 Main St.
+		&lt;CITY&gt;Anytown
+		&lt;STATE&gt;TX
+		&lt;POSTALCODE&gt;87321
+		&lt;COUNTRY&gt;USA
+		&lt;DAYPHONE&gt;123-456-7890
+		&lt;EVEPHONE&gt;987-654-3210
+		&lt;EMAIL&gt;jsmith@isp.com
+		&lt;USERID&gt;jls
+		&lt;TAXID&gt;123-456-1234
+		&lt;SECURITYNAME&gt;jbmam
+		&lt;DATEBIRTH&gt;19530202
+	&lt;/ENROLLRQ&gt;
+&lt;/ENROLLTRNRQ&gt;</font><font
+SIZE="2">And the reply might be:
+</font><font SIZE="1" FACE="Courier New">&lt;ENROLLTRNRS&gt;
+	&lt;TRNUID&gt;12345
+	&lt;STATUS&gt;
+		&lt;CODE&gt;0
+		&lt;SEVERITY&gt;INFO
+	&lt;/STATUS&gt;
+	&lt;ENROLLRS&gt;
+		&lt;TEMPPASS&gt;changeme
+		&lt;USERID&gt;jls
+		&lt;DTEXPIRE&gt;19970105
+	&lt;/ENROLLRS&gt;
+&lt;/ENROLLTRNRS&gt;</font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493331"><font SIZE="5" FACE="Arial">Account Information</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Account information requests ask a server to identify and describe all
+of the accounts accessible by the signed-on user. The definition of <i>all</i> is up to
+the FI. At a minimum, it is <b>RECOMMENDED</b> that a server include information about all
+accounts that it can activate for one or more Open Financial Exchange services. To give
+the user a complete picture of his relationship with an FI, FIs can give information on
+other accounts, even if those accounts are available only for limited Open Financial
+Exchange services.</font> </p>
+
+<p><font SIZE="2">Some service providers will not have any prior knowledge of any user
+account information. The profile allows these servers to report this, and clients will
+then know to ask users for account information rather than reading it from the server.</font>
+</p>
+
+<p><font SIZE="2">Clients can perform several tasks for users with this account
+information. First, the information helps a client set up a user for online services by
+giving it a precise list of its account information and available services for each.
+Clients can set up their own internal state as well as prepare service activation requests
+with no further typing by users. This can eliminate data entry mistakes in account
+numbers, routing transit numbers, and so forth.</font> </p>
+
+<p><font SIZE="2">Second, FIs can provide limited information on accounts that would not
+ordinarily be suitable to Open Financial Exchange services. For example, a balance-only
+statement download would be useful for certificates of deposits even though a customer or
+an FI might not want or allow CDs to be used for full statement download.</font> </p>
+
+<p><font SIZE="2">For each account, there is one &lt;ACCTINFO&gt; aggregate returned. The
+aggregate includes one service-specific account information aggregate for each available
+service on that account. That, in turn, provides the service-specific account
+identification. Common to each service-specific account information aggregate is the
+&lt;SVCSTATUS&gt; tag, which indicates the status of this service on this account.</font> </p>
+
+<p><font SIZE="2">A server should return joint accounts (accounts for which more than one
+user ID can be used to access the account) for either user. Clients that wish to have a
+unified view will aggregate the results and remove duplicates before making specific
+requests involving joint accounts.</font> </p>
+
+<p><font SIZE="2">Requests and responses include a &lt;DTACCTUP&gt; element. Responses
+contain the last time a server updated the information. Clients can <b>OPTIONALLY </b>send
+this in a subsequent request, and servers are <b>REQUIRED </b>to compare this to the
+current modification time and only send information if it is more recent. The server sends
+the entire account information response if the client's time is older; there is no attempt
+to incrementally update specific account information.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493332"><font SIZE="4" FACE="Arial">Request &lt;ACCTINFORQ&gt;</font></a>
+  </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="180"><i><font SIZE="2">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="318"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;ACCTINFORQ&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Account-information-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;DTACCTUP&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Last &lt;DTACCTUP&gt; received in a response</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;INCIMAGES&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Y if server should include logo in response, N if client
+    will separately fetch them based on given URL; <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;/ACCTINFORQ&gt;</font></b> </td>
+    <td WIDTH="318">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493333"><font SIZE="4" FACE="Arial">Response &lt;ACCTINFORS&gt;</font></a>
+  </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="180"><i><font SIZE="2">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="318"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;ACCTINFORS&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Account-information-response aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;DTACCTUP&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Date and time of last update to this information on the
+    server</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ACCTINFO&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Zero or more account information aggregates</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;/ACCTINFO&gt;</font> </td>
+    <td WIDTH="318">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;/ACCTINFORS&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">End of account information response</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493334"><font SIZE="4" FACE="Arial">Account Information Aggregate
+    &lt;ACCTINFO&gt;</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="210"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="288"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><b><font SIZE="1">&lt;ACCTINFO&gt;</font></b> </td>
+    <td WIDTH="288"><font SIZE="2">Account-information-record aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><font SIZE="1">&lt;DESC&gt;</font></td>
+    <td WIDTH="288"><font SIZE="2">Description of the account, <i>A-80</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><font SIZE="1">&lt;PHONE&gt;</font></td>
+    <td WIDTH="288"><font SIZE="2">Telephone number for the account, <i>A-20</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><font SIZE="1">&lt;LOGO&gt;</font></td>
+    <td WIDTH="288"><font SIZE="2">URL to request the logo for the account (actual logos
+    should be included via multi-part MIME in the response file if requested), <i>URL</i></font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><b><font SIZE="1">&lt;<i><b>XXXACCTINFO&gt;</b></i></font></b> </td>
+    <td WIDTH="288"><font SIZE="2">Service-specific account information, defined in each
+    service chapter, one or more allowed</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><b><font SIZE="1">&lt;<b><i>XXXACCTFROM</i>&gt;</b></font></b> </td>
+    <td WIDTH="288"><font SIZE="2">Service-specific account identification</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><b><font SIZE="1">&lt;/<b><i>XXXACCTFROM</i>&gt;</b></font></b> </td>
+    <td WIDTH="288">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><b><font SIZE="1">&lt;SVCSTATUS&gt;</font></b> </td>
+    <td WIDTH="288"><font SIZE="2">AVAIL = Available, but not yet requested</font> <p><font
+    SIZE="2">PEND = Requested, but not yet available</font> </p>
+    <p><font SIZE="2">ACTIVE = In use</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><b><font SIZE="1">&lt;/<b><i>XXXACCTINFO</i>&gt;</b></font></b> </td>
+    <td WIDTH="288">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="210"><b><font SIZE="1">&lt;/ACCTINFO&gt;</font></b> </td>
+    <td WIDTH="288">&nbsp;</td>
+  </tr>
+</table>
+
+<p><i><b>NOTE:</b> A server uses the &lt;DESC&gt; field to convey the FI's preferred name
+for the account, such as &quot;PowerChecking.&quot; It should not include the account
+number. </i>
+
+<ol>
+  <li><a NAME="_Toc380493335"><font SIZE="4" FACE="Arial">Status Codes</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="72"><i><font SIZE="1">Code</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="300"><i><font SIZE="2">Meaning</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">0</font></td>
+    <td WIDTH="300"><font SIZE="2">Success (INFO)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2000</font></td>
+    <td WIDTH="300"><font SIZE="2">General error (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">13001</font></td>
+    <td WIDTH="300"><font SIZE="2">No change since supplied &lt;DTACCTUP&gt; (INFO)</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493336"><font SIZE="4" FACE="Arial">Examples</font></a><font SIZE="2">An
+    account information request:</font> </li>
+</ol>
+
+<pre>
+<font SIZE="1">&lt;ACCTINFOTRNRQ&gt;
+	&lt;TRNUID&gt;12345
+	&lt;ACCTINFORQ&gt;
+		&lt;DTACCTUP&gt;19960101
+		&lt;INCIMAGES&gt;N
+	&lt;/ACCTINFORQ&gt;
+&lt;/ACCTINFOTRNRQ&gt;</font><font
+SIZE="2">And a response for a
+user with access to one account, supporting banking:
+<a
+NAME="_Toc379956901"><font SIZE="1">&lt;ACCTINFOTRNRS&gt;
+	&lt;TRNUID&gt;12345
+	&lt;STATUS&gt;
+		&lt;CODE&gt;0
+		&lt;SEVERITY&gt;INFO
+	&lt;/STATUS&gt;
+	&lt;ACCTINFORS&gt;
+		&lt;DTACCTUP&gt;19960102
+		&lt;ACCTINFO&gt;
+		&lt;DESC&gt;Power Checking
+		&lt;PHONE&gt;8002223333
+		&lt;LOGO&gt;https://www.fi.com/ofx/logos/powercheck.jpg
+			&lt;BANKACCTINFO&gt;
+				&lt;BANKACCTFROM&gt;
+					&lt;BANKID&gt;1234567789
+					&lt;ACCTID&gt;12345
+					&lt;ACCTTYPE&gt;CHECKING
+				&lt;/BANKACCTFROM&gt;
+			&lt;SUPTXDL&gt;Y
+			&lt;XFERSRC&gt;Y
+			&lt;XFERDEST&gt;Y
+			&lt;SVCSTATUS&gt;ACTIVE
+			&lt;/BANKACCTINFO&gt;	
+		&lt;/ACCTINFO&gt;
+	&lt;/ACCTINFORS&gt;
+&lt;/ACCTINFOTRNRS&gt;</font></a></font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493337"><font SIZE="5" FACE="Arial">Service Activation</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Clients inform FIs that they wish to start, modify, or terminate a
+service for an account by sending service activation requests. These are subject to data
+synchronization, and servers should send responses to inform clients of any changes, even
+if the changes originated on the server. </font></p>
+
+<p><font SIZE="2">Clients use these records during the initial user sign-up process. Once
+a client learns about the available accounts and services (by using the account
+information request above, or by having a user directly enter the required information),
+it sends a series of service ADD requests.</font> </p>
+
+<p><font SIZE="2">If a user changes any of the identifying information about an account,
+the client sends a service activation request containing both the old and the new account
+information. Servers should interpret this as a change in the account, not a request to
+transfer the service between two existing accounts, and all account-based information such
+as synchronization tokens should continue. If a user or FI is reporting that service
+should be moved between two existing accounts, service must be terminated for the old
+account and started for the new account. The new account will have reset token histories,
+as with any new service.</font> </p>
+
+<p><font SIZE="2">Each service to be added, changed, or removed is contained in its own
+request because the same real-world account might require different &lt;ACCTFROM&gt;
+aggregates depending on the type of service.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493338"><font SIZE="4" FACE="Arial">Activation Request and Response</font></a>
+  </li>
+  <li><font SIZE="2" FACE="Arial">Request &lt;ACCTRQ&gt;</font> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;ACCTRQ&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Account-service-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;<i>ACTION&gt;</i></font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Action aggregate, either &lt;SVCADD&gt;, &lt;SVCCHG&gt;, or
+    &lt;SVCDEL&gt;</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/<i>ACTION&gt;</i></font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;SVC&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Service to be added/changed/deleted</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/ACCTRQ&gt;</font></b></td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><font SIZE="2" FACE="Arial">Response &lt;ACCTRS&gt;</font> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;ACCTRS&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Account-service-response aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;<i>ACTION&gt;</i></font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Action aggregate, either &lt;SVCADD&gt;, &lt;SVCCHG&gt;, or
+    &lt;SVCDEL&gt;</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/<i>ACTION&gt;</i></font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;SVC&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Service to be added/changed:</font> <p><font SIZE="2">BANKSVC
+    = Banking service<br>
+    BPSVC = Payments service<br>
+    INVSVC = Investments</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/ACCTRS&gt;</font></b></td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><font SIZE="2" FACE="Arial">Service Add Aggregate &lt;SVCADD&gt;</font> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;SVCADD&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Service-add aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;<i>ACCTTO&gt;</i></font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Service-specific-account-identification aggregate (see
+    &lt;BANKACCTTO&gt;, &lt;INVACCTTO&gt;)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/<i>ACCTTO</i>&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/SVCADD&gt;</font></b></td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><font SIZE="2" FACE="Arial">Service Change Aggregate &lt;SVCCHG&gt;</font> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;SVCCHG&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Service-add aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;<i>ACCTFROM&gt;</i></font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Service-specific-account-identification aggregate (see
+    &lt;BANKACCTFROM&gt;, &lt;INVACCTFROM&gt;)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/<i>ACCTFROM</i>&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;<i>ACCTTO&gt;</i></font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Service-specific-account-identification aggregate (see
+    &lt;BANKACCTTO&gt;, &lt;INVACCTTO&gt;)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/<i>ACCTTO</i>&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/SVCCHG&gt;</font></b></td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><font SIZE="2" FACE="Arial">Service Delete Aggregate &lt;SVCDEL&gt;</font> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;SVCDEL&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Service-deletion aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;<i>ACCTFROM&gt;</i></font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Service-specific-account-identification aggregate (see
+    &lt;BANKACCTFROM&gt;, &lt;INVACCTFROM&gt;)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/<i>ACCTFROM</i>&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/SVCDEL&gt;</font></b></td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc378489965"><font SIZE="2" FACE="Arial">Status Codes</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="72"><i><font SIZE="1">Code</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="300"><i><font SIZE="2">Meaning</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">0</font></td>
+    <td WIDTH="300"><font SIZE="2">Success (INFO)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2000</font></td>
+    <td WIDTH="300"><font SIZE="2">General error (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2002</font></td>
+    <td WIDTH="300"><font SIZE="2">Other account error (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2006</font></td>
+    <td WIDTH="300"><font SIZE="2">Source (from) account not found (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2007</font></td>
+    <td WIDTH="300"><font SIZE="2">Source (from) account closed (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2008</font></td>
+    <td WIDTH="300"><font SIZE="2">Source (from) account not authorized (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2009</font></td>
+    <td WIDTH="300"><font SIZE="2">Destination (to) account not found (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2010</font></td>
+    <td WIDTH="300"><font SIZE="2">Destination (to) account closed (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2011</font></td>
+    <td WIDTH="300"><font SIZE="2">Destination (to) account not authorized (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">13502</font></td>
+    <td WIDTH="300"><font SIZE="2">Invalid service (ERROR)</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493339"><font SIZE="4" FACE="Arial">Service Activation Synchronization</font></a>
+  </li>
+</ol>
+
+<p><font SIZE="2">Service activation requests are subject to the standard data
+synchronization protocol. The scope of these requests and the &lt;TOKEN&gt; is the
+user-ID. The request and response tags are &lt;ACCTSYNCRQ&gt; and &lt;ACCTSYNCRS&gt;.</font>
+
+<ol>
+  <li><a NAME="_Toc380493340"><font SIZE="4" FACE="Arial">Examples</font></a><font SIZE="2">Activating
+    a payment:</font> </li>
+</ol>
+
+<pre>
+<font SIZE="1">&lt;ACCTTRNRQ&gt;
+	&lt;TRNUID&gt;12345
+	&lt;ACCTRQ&gt;
+		&lt;SVCADD&gt;
+			&lt;BANKACCTTO&gt;
+				&lt;BANKID&gt;1234567789
+				&lt;ACCTID&gt;12345
+				&lt;ACCTTYPE&gt;CHECKING
+			&lt;/BANKACCTTO&gt;	
+		&lt;/SVCADD&gt;	
+		&lt;SVC&gt;BPSVC
+	&lt;/ACCTRQ&gt;	
+&lt;/ACCTTRNRQ&gt;</font><font
+SIZE="2">A response:
+</font><font SIZE="1" FACE="Courier New">&lt;ACCTTRNRS&gt;
+	&lt;TRNUID&gt;12345
+		&lt;STATUS&gtgt;
+		&lt;CODE&gt;0
+		&lt;SEVERITY&gt;INFO
+	&lt;/STATUS&gt;
+	&lt;ACCTRS&gt;
+		&lt;SVCADD&gt;
+			&lt;BANKACCTTO&gt;
+				&lt;BANKID&gt;1234567789
+				&lt;ACCTID&gt;12345
+				&lt;ACCTTYPE&gt;CHECKING
+			&lt;/BANKACCTTO&gt;	
+		&lt;/SVCADD&gt;	
+		&lt;SVC&gt;BPSVC
+	&lt;/ACCTRS&gt;	
+&lt;/ACCTTRNRS&gt;</font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493341"><font SIZE="5" FACE="Arial">Name and Address Changes
+    &lt;CHGUSERINFORQ&gt; &lt;CHGUSERINFORS&gt;</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Users may request that an FI update the official name, address, phone,
+and e-mail information using the &lt;CHGUSERINFORQ&gt;. Only the fields that should be
+changed are sent. The response reports all of the current values. For security reasons,
+some of the fields in the &lt;ENROLLRQ&gt; cannot be changed online, such as tax ID. </font></p>
+
+<p><font SIZE="2">The transaction tag is &lt;CHGUSERINFOTRNRQ&gt; and
+&lt;CHGUSERINFOTRNRSRQ&gt;. These methods are subject to synchronization,
+&lt;CHGUSERINFOSYNCRQ&gt; and &lt;CHGUSERINFOSYNCRS&gt;.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493342"><font SIZE="4" FACE="Arial">&lt;CHGUSERINFORQ&gt;</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="180"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="318"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;CHGUSERINFORQ&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Change-user-information-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;FIRSTNAME&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">First name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;MIDDLENAME&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Middle name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;LASTNAME&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Last name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ADDR1&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Address line 1</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ADDR2&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Address line 2</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ADDR3&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Address line 3</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;CITY&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">City</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;STATE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">State or province</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;POSTALCODE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Postal code</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;COUNTRY&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">3-letter country code from ISO/DIS-3166</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;DAYPHONE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Daytime telephone number</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;EVEPHONE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Evening telephone number</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;EMAIL&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Electronic e-mail address</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;/CHGUSERINFORQ&gt;</font></b> </td>
+    <td WIDTH="318">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493343"><font SIZE="4" FACE="Arial">&lt;CHGUSERINFORS&gt;</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="180"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="318"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;CHGUSERINFORS&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Change-user-information-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;FIRSTNAME&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">First name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;MIDDLENAME&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Middle name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;LASTNAME&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Last name of user</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ADDR1&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Address line 1</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;ADDR2&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Address line 2</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;CITY&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">City</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;STATE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">State or province</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;POSTALCODE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Postal code</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;COUNTRY&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">3-letter country code from ISO/DIS-3166</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;DAYPHONE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Daytime telephone number</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;EVEPHONE&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Evening telephone number</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><font SIZE="1" FACE="Arial">&lt;EMAIL&gt;</font> </td>
+    <td WIDTH="318"><font SIZE="2">Electronic e-mail address</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;DTINFOCHG&gt;</font></b> </td>
+    <td WIDTH="318"><font SIZE="2">Date and time of update <i>datetime</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="180"><b><font SIZE="1">&lt;/CHGUSERINFORS&gt;</font></b> </td>
+    <td WIDTH="318">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493344"><font SIZE="4" FACE="Arial">Status Codes</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="72"><i><font SIZE="1">Code</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="300"><i><font SIZE="2">Meaning</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">0</font></td>
+    <td WIDTH="300"><font SIZE="2">Success (INFO)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2000</font></td>
+    <td WIDTH="300"><font SIZE="2">General error (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">13503</font></td>
+    <td WIDTH="300"><font SIZE="2">Cannot change user information (ERROR)</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493345"><font SIZE="5" FACE="Arial">Signup Message Set Profile
+    Information</font></a> </li>
+</ol>
+
+<p><font SIZE="2">A server must include the following aggregates as part of the profile
+&lt;MSGSETLIST&gt; response, since every server must support at least the account
+information and service activation messages. In the &lt;ENROLLPROF&gt; aggregate, servers
+indicate how enrollment should proceed: via the client, a given web page, or a text
+message directing users to some other method (such as a phone call)..</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;SIGNUPMSGSET&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Signup-message-set-profile-information aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;SIGNUPMSGSETV1&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Opening tag for V1 of the message set profile information</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Common message set information, defined in the profile
+    chapter</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162">&nbsp;</td>
+    <td WIDTH="336"><font SIZE="2">Enrollment options - only one of &lt;CLIENTENROLL&gt;,
+    &lt;WEBENROLL&gt;, or &lt;OTHERENROLL&gt; is allowed</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;</font></b><font SIZE="1" FACE="Arial">CLIENTENROLL<b>&gt;</b></font>
+    </td>
+    <td WIDTH="336"><font SIZE="2">Client-based enrollment supported</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;ACCTREQUIRED&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Y if account number is required as part of enrollment <i>Boolean</i></font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/</font></b><font SIZE="1" FACE="Arial">CLIENTENROLL<b>&gt;</b></font>
+    </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;</font></b><font SIZE="1" FACE="Arial">WEBENROLL<b>&gt;</b></font>
+    </td>
+    <td WIDTH="336"><font SIZE="2">Web-based enrollment supported</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;URL&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">URL to start enrollment process</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/WEBENROLL&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;</font></b><font SIZE="1" FACE="Arial">OTHERENROLL<b>&gt;</b></font>
+    </td>
+    <td WIDTH="336"><font SIZE="2">Some other enrollment process</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;MESSAGE&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Message to give to consumer about what to do next (e.g. a
+    phone number) <i>A-80</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/</font></b><font SIZE="1" FACE="Arial">OTHERENROLL<b>&gt;</b></font>
+    </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;CHGUSERINFO&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Y if server supports client-based user information changes</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;AVAILACCTS&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Y if server can provide information on accounts with
+    SVCSTATUS available, N means client should expect to ask user for specific account
+    information <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/SIGNUPMSGSETV1&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/SIGNUPMSGSET&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<p><br>
+
+<ol>
+  <li><a NAME="_Toc380493346"><font SIZE="6" FACE="Arial">Customer to FI Communication</font></a>
+  </li>
+  <li><a NAME="_Toc380493347"><font SIZE="5" FACE="Arial">The E-Mail Message Set</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The e-mail message set includes two messages: generic e-mail and generic
+MIME requests by way of URLs. In Open Financial Exchange files, the message set name is
+EMAILMSGSV1.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493348"><font SIZE="5" FACE="Arial">E-Mail Messages</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Open Financial Exchange allows consumers and FIs to exchange messages.
+The message body is in HTML so that FIs can provide some graphic structure to the message.
+Keep in mind that, as with regular World Wide Web browsing, an Open Financial Exchange
+client might not support some or all of the HTML formatting, so the text of the message
+must be clear on its own. Clients can request that graphics (the images referenced in an
+&lt;IMG&gt; tag) be sent as part of the response file, or clients can separately request
+those elements. If a server sends images, it should use the standard procedure for
+incorporating external data as described in Chapter 2. Servers are not required to support
+HTML or to send images, even if the client asks.</font> </p>
+
+<p><font SIZE="2">A user or an FI can originate a message. E-mail messages are subject to
+data synchronization so that a server can send a response again if it is lost or if it is
+used by multiple clients.</font> </p>
+
+<p><font SIZE="2">Because e-mail messages cannot be replied to immediately, the response
+should just echo back the original message (so that data synchronization will get this
+original e-mail message to other clients). When the FI is ready to reply, it should
+generate an unsolicited response (&lt;TRNUID&gt;0) and the client will pick this up during
+synchronization.</font> </p>
+
+<table BORDERCOLOR="#000000" BORDER="1">
+  <tr>
+    <td BGCOLOR="#FFFFFF" WIDTH="156"><i><font SIZE="1">Client Sends</font></i> </td>
+    <td BGCOLOR="#FFFFFF" WIDTH="168"><i><font SIZE="2">Server Responds</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="156"><font SIZE="1">Account information</font></td>
+    <td WIDTH="168">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="156"><font SIZE="1">From, To</font></td>
+    <td WIDTH="168">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="156"><font SIZE="1">Subject</font></td>
+    <td WIDTH="168">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="156"><font SIZE="1">Message</font></td>
+    <td WIDTH="168">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="156">&nbsp;</td>
+    <td WIDTH="168"><font SIZE="2">Account information</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="156">&nbsp;</td>
+    <td WIDTH="168"><font SIZE="2">From, To</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="156">&nbsp;</td>
+    <td WIDTH="168"><font SIZE="2">Subject</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="156">&nbsp;</td>
+    <td WIDTH="168"><font SIZE="2">Message</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="156">&nbsp;</td>
+    <td WIDTH="168"><font SIZE="2">Type</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493349"><font SIZE="4" FACE="Arial">Regular vs. Specialized E-Mail</font></a>
+  </li>
+</ol>
+
+<p><font SIZE="2">Several services with Open Financial Exchange define e-mail requests and
+responses that contain additional information specific to that service. To simplify
+implementation for both clients and servers, this section defines a &lt;MAIL&gt; aggregate
+that Open Financial Exchange uses in all e-mail requests and responses. For regular
+e-mail, the only additional information is an account from aggregate and whether to
+include images in the e-mail response or not. </font>
+
+<ol>
+  <li><a NAME="_Toc380493350"><font SIZE="4" FACE="Arial">Basic &lt;MAIL&gt; Aggregate</font></a>
+  </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="366"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MAIL&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">Core e-mail aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;USERID&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">User ID such as SSN</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;DTCREATED&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">When message was created <i>datetime</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;FROM&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">Customer's input for whom message is from, <i>A-32</i></font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;TO&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">Who e-mail should be delivered to, <i>A-32</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;SUBJECT&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Subject of message (plain text, not HTML), <i>A-60</i></font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MSGBODY&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Body of message, HTML-encoded or plain text depending on
+    &lt;USEHTML&gt;, <i>A-10000</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MSGBODY&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">End of message</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;INCIMAGES&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Include images in response, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;USEHTML&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Y if client wants an HTML response, N if client wants plain
+    text, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MAIL&gt;</font></b></td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<p>If using HTML for the message body, clients and servers are <b>REQUIRED</b> to wrap the
+desired HTML in an SGML marked section to protect the HTML markup: &lt;![ CDATA [ ... html
+... ]]&gt;. See the example. 
+
+<ol>
+  <li><a NAME="_Toc380493351"><font SIZE="4" FACE="Arial">E-Mail &lt;MAILRQ&gt; &lt;MAILRS&gt;</font></a>
+  </li>
+</ol>
+
+<p><font SIZE="2">E-mail is subject to synchronization. The transaction tag is
+&lt;MAILTRNRQ&gt; / &lt;MAILTRNRS&gt; and the synchronization tag is &lt;MAILSYNCRQ&gt; /
+&lt;MAILSYNCRS&gt;.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="366"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MAILRQ&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">E-mail-message-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MAIL&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">Core e-mail aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MAIL&gt;</font></b></td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MAILRQ&gt;</font></b></td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<p>In a response, the &lt;TRNUID&gt; is zero if this is an unsolicited message. Otherwise,
+it should contain the &lt;TRNUID&gt; of the user's original message. It is RECOMMENDED
+that servers include the &lt;MESSAGE&gt; of the user's message as part of the reply
+&lt;MESSAGE&gt;. The &lt;MESSAGE&gt; contents can include carriage returns to identify
+desired line breaks. </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="366"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MAILRS&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">E-mail-message-response aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MAIL&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">Core e-mail aggregate</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MAIL&gt;</font></b></td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MAILRS&gt;</font></b></td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc378489974"><font SIZE="2" FACE="Arial">Status Codes</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="72"><i><font SIZE="1">Code</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="300"><i><font SIZE="2">Meaning</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">0</font></td>
+    <td WIDTH="300"><font SIZE="2">Success (INFO)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2000</font></td>
+    <td WIDTH="300"><font SIZE="2">General error (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">16500</font></td>
+    <td WIDTH="300"><font SIZE="2">HTML not allowed (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">16501</font></td>
+    <td WIDTH="300"><font SIZE="2">Unknown mail To: (ERROR)</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493352"><font SIZE="4" FACE="Arial">E-Mail Synchronization
+    &lt;MAILSYNCRQ&gt; &lt;MAILSYNCRS&gt;</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Open Financial Exchange uses data synchronization to collect responses
+that could have been lost due to communication problems, or that the servers previously
+sent to a different client or data file. All messages sent to the signed-on user ID are
+covered by a single &lt;TOKEN&gt;. Note that this synchronization action expects only the
+basic &lt;MAILRS&gt; responses. Specialized e-mail is received by means of their own
+synchronization requests.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><font SIZE="1">Tag</font></td>
+    <td BGCOLOR="#000000" WIDTH="366"><font SIZE="2">Description</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MAILSYNCRQ&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">E-mail-synchronization-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;TOKEN&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">Client history marker</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;INCIMAGES&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Include images in response, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;USEHTML&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Y if client wants an HTML response, N if client wants plain
+    text, <i>Boolean</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MAILSYNCRQ&gt;</font></b> </td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><font SIZE="1">Tag</font></td>
+    <td BGCOLOR="#000000" WIDTH="366"><font SIZE="2">Description</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;MAILSYNCRS&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">E-mail-synchronization-response. aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;TOKEN&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">Server history marker</font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><font SIZE="1">&lt;MAILTRNRS&gt;</font></td>
+    <td WIDTH="366"><font SIZE="2">Missing e-mail response transactions (0 or more)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/MAILSYNCRS&gt;</font></b> </td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493353"><font SIZE="4" FACE="Arial">Example</font></a> </li>
+</ol>
+
+<p><font SIZE="2">In this example, a consumer requests information from customer service
+about the checking statement just downloaded. This example omits the &lt;OFX&gt; top level
+and the signon &lt;SONRQ&gt;. This example uses HTML for the message body, and so it must
+protect the HTML content in an SGML CDATA marked section.The request:</font> </p>
+
+<pre>
+<font SIZE="1">&lt;MAILTRNRQ&gt;
+	&lt;TRNUID&gt;54321
+	&lt;MAILRQ&gt;
+		&lt;MAIL&gt;
+			&lt;USERID&gt;123456789
+			&lt;FROM&gt;James Hackleman
+			&lt;TO&gt;Noelani Federal Savings
+			&lt;SUBJECT&gt;What do I need to earn interest?
+			&lt;DTCREATED&gt;19960305
+</font><font
+SIZE="2">			&lt;MSGBODY&gt;&lt;![ CDATA [&lt;HTML&gt;&lt;BODY&gt;I didn't earn any interest this month. Can you please tell me what I need to do to earn interest on this account?&lt;/BODY&gt;&lt;/HTML&gt;
+]]&gt;&lt;/MSGBODY&gt;
+			&lt;INCIMAGES&gt;N
+			&lt;USEHTML&gt;Y
+		&lt;/MAIL&gt;
+	&lt;/MAILRQ&gt;
+&lt;/MAILTRNRQ&gt;The response from the FI:
+</font><font
+SIZE="1" FACE="Courier New">&lt;MAILTRNRS&gt;
+	&lt;TRNUID&gt;54321
+	&lt;STATUS&gt;
+		&lt;CODE&gt;0
+		&lt;SEVERITY&gt;INFO
+		&lt;/STATUS&gt;
+	&lt;MAILRS&gt;
+		&lt;MAIL&gt;
+			&lt;USERID&gt;123456789
+			&lt;DTCREATED&gt;19960307
+			&lt;FROM&gt;Noelani Federal Savings
+			&lt;TO&gt;James Hackleman
+			&lt;SUBJECT&gt;Re: What do I need to earn interest?
+</font><font
+SIZE="2">			&lt;MSGBODY&gt;&gt;&lt;![ CDATA [&lt;HTML&gt;&lt;BODY&gt;You need to maintain $1000 in this account to earn interest. Because your balance was only $750 this month, no interest was earned. You could also switch to our new Checking Extra plan that always pays interest. Call us or check our web page http://www.fi.com/check-plans.html for more information.
+Sincerely,
+Customer Service Department
+
+Original message:
+I didn't earn any interest this month. Can you please tell me what I need to do to earn interest on this account?&lt;/BODY&gt;&lt;/HTML&gt;
+]]&gt;&lt;/MSGBODY&gt;
+			&lt;INCIMAGES&gt;N
+			&lt;USEHTML&gt;Y
+		&lt;/MAIL&gt;
+	&lt;/MAILRS&gt;
+&lt;/MAILTRNRS&gt;</font>
+</pre>
+
+<ol>
+  <li><font SIZE="2" FACE="Arial">Example of Synchronization Involving E-Mail </font></li>
+</ol>
+
+<p><font SIZE="2">In the following example the client did not receive the reply to the
+message sent in the previous example, so its &lt;TOKEN&gt; is one less than the server's.
+The server replies by giving the current &lt;TOKEN&gt; and the missed response.</font> </p>
+
+<pre>
+<font SIZE="1">&lt;MAILSYNCRQ&gt;
+	&lt;TOKEN&gt;101
+&lt;/MAILSYNCRQ&gt;
+
+&lt;MAILSYNCRS&gt;
+	&lt;TOKEN&gt;102
+	&lt;MAILTRNRS&gt;
+		&lt;TRNUID&gt;54321
+		&lt;STATUS&gt;
+			&lt;CODE&gt;0
+			&lt;SEVERITY&gt;INFO
+		&lt;/STATUS&gt;
+		&lt;MAILRS&gt;
+			... contents of e-mail message response as shown in previous example
+		&lt;/MAILRS&gt;
+	&lt;/MAILTRNRS&gt;
+&lt;/MAILSYNCRS&gt;</font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493354"><font SIZE="5" FACE="Arial">Get HTML Page</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Some responses contain values that are URLs, intended to be separately
+fetched by clients if desired. Clients can use their own HTTP libraries to perform this
+fetch outside of the Open Financial Exchange specification. However, to insulate clients
+against changes in transport technology, and to allow for fetches that require the
+protection of an authenticated signon by a specific user, Open Financial Exchange defines
+a transaction roughly equivalent to an HTTP Get. Any MIME type can be retrieved, including
+images as well as HTML pages.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493355"><font SIZE="4" FACE="Arial">MIME Get Request and Response
+    &lt;GETMIMERQ&gt; &lt;GETMIMERS&gt;</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The following table lists the components of a request:</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="366"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;GETMIMERQ&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Get-MIME-request aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;URL&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">URL, <i>URL</i></font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/GETMIMERQ&gt;</font></b> </td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<p>The response simply echoes back the URL. The actual response, whether HTML, an image,
+or some other type, is always sent as a separate part of the file using multi-part MIME. </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="132"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="366"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;GETMIMERS&gt;</font></b> </td>
+    <td WIDTH="366"><font SIZE="2">Get-MIME-response aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;URL&gt;</font></b></td>
+    <td WIDTH="366"><font SIZE="2">URL, <i>URL</i></font></td>
+  </tr>
+  <tr>
+    <td WIDTH="132"><b><font SIZE="1">&lt;/GETMIMERS&gt;</font></b> </td>
+    <td WIDTH="366">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc378489978"><font SIZE="2" FACE="Arial">Status Codes</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="72"><i><font SIZE="1">Code</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="300"><i><font SIZE="2">Meaning</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">0</font></td>
+    <td WIDTH="300"><font SIZE="2">Success (INFO)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2000</font></td>
+    <td WIDTH="300"><font SIZE="2">General error (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">2019</font></td>
+    <td WIDTH="300"><font SIZE="2">Duplicate transaction (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">16502</font></td>
+    <td WIDTH="300"><font SIZE="2">Invalid URL (ERROR)</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="72"><font SIZE="1">16503</font></td>
+    <td WIDTH="300"><font SIZE="2">Unable to get URL (ERROR)</font> </td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493356"><font SIZE="4" FACE="Arial">Example</font></a><font SIZE="2">A
+    request:</font> </li>
+</ol>
+
+<pre>
+<font SIZE="1">&lt;GETMIMETRNRQ&gt;
+	&lt;TRNUID&gt;54321
+	&lt;GETMIMERQ&gt;
+		&lt;URL&gt;http://www.fi.com/apage.html
+	&lt;/GETMIMERQ&gt;
+&lt;/GETMIMETRNRQ&gt;</font><font
+SIZE="2">A response - the full
+file is shown here to illustrate the use of multi-part MIME:
+</font><font
+SIZE="1" FACE="Courier New">HTTP 1.0 200 OK
+Content-Type: multipart/x-mixed-replace; boundary =--boundary-
+
+--boundary--
+Content-Type: application/x-ofx
+Content-Length: 8732
+
+</font><font
+SIZE="2">OFXHEADER:100
+DATA:OFXSGML
+VERSION:100
+ENCRYPTION:1
+ENCODING:USASCII
+
+&lt;OFX&gt;
+		&lt;!-- signon not shown 
+		message set wrappers not shown --&gt;
+&lt;GETMIMETRNRS&gt;
+	&lt;TRNUID&gt;54321
+	&lt;STATUS&gt;
+		&lt;CODE&gt;0
+		&lt;SEVERITY&gt;INFO
+	&lt;/STATUS&gt;
+	&lt;GETMIMERS&gt;
+		&lt;URL&gt;http://www.fi.com/apage.html
+	&lt;/GETMIMERS&gt;
+&lt;/GETMIMETRNRS&gt;
+&lt;/OFX&gt;
+
+--boundary-- 
+Content-Type: text/html
+&lt;HTML&gt;
+	&lt;!-- standard HTML page --&gt;
+&lt;/HTML&gt;
+
+--boundary--
+	
+</font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493357"><font SIZE="5" FACE="Arial">E-Mail Message Set Profile
+    Information</font></a> </li>
+</ol>
+
+<p><font SIZE="2">If either or both of the messages in the e-mail message set are
+supported, the following aggregate must be included in the profile &lt;MSGSETLIST&gt;
+response.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="162"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="336"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;EMAILMSGSET&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">E-mail-message-set-profile-information aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;EMAILMSGSETV1&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Opening tag for V1 of the message set profile information</font>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Common message set information, defined in the profile
+    chapter</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/MSGSETCORE&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;EMAIL&gt;</font></b></td>
+    <td WIDTH="336"><font SIZE="2">Y if server supports generic e-mail message</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;GETMIME&gt;</font></b> </td>
+    <td WIDTH="336"><font SIZE="2">Y if server supports get MIME message</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/EMAILMSGSETV1&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+  <tr>
+    <td WIDTH="162"><b><font SIZE="1">&lt;/EMAILMSGSET&gt;</font></b> </td>
+    <td WIDTH="336">&nbsp;</td>
+  </tr>
+</table>
+
+<p><br>
+<br>
+
+<ol>
+  <li><a NAME="_Toc380493358"><font SIZE="6" FACE="Arial">Recurring Transactions</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Open Financial Exchange enables users to automate transactions that
+occur on a regular basis. Recurring transactions are useful when a customer has payments
+or transfers, for example, that repeat at regular intervals. The customer can create a
+&quot;model&quot; at the server for automatic generation of these instructions. The model
+in turn creates payments or transfers until it is canceled or expires. After the user
+creates a recurring model at the server, the server can relieve the user from the burden
+of creating these transactions; it generates the transactions on its own, based on the
+operating parameters of the model.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493359"><font SIZE="5" FACE="Arial">Creating a Recurring Model</font></a>
+  </li>
+</ol>
+
+<p><font SIZE="2">The client must provide the following information to create a model:</font>
+
+<ul>
+  <li><font SIZE="2">Type of transaction generated by the model (payment or transfer) </font></li>
+  <li><font SIZE="2">Frequency of recurring transaction</font> </li>
+  <li><font SIZE="2">Total number of recurring transactions to generate</font> </li>
+  <li><font SIZE="2">Service-specific information, such as transfer date, payment amount,
+    payee address</font> </li>
+</ul>
+
+<p><font SIZE="2">The model creates each transaction some time before its due date,
+usually thirty days. This allows the user to retrieve the transactions in advance of
+posting. This also gives the user the opportunity to modify or cancel individual
+transactions without changing the recurring model itself.</font> </p>
+
+<p><font SIZE="2">When a model is created, it can generate several transactions
+immediately. The model does not automatically return responses for the newly created
+transactions. It only returns a response to the request that was made to create the model.
+For this reason, clients should send a synchronization request along with the request to
+create a model. This allows the server to return the newly created transaction responses,
+as well as the response to the request to set up a new model.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493360"><font SIZE="5" FACE="Arial">Recurring Instructions
+    &lt;RECURRINST&gt;</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The Recurring Instructions aggregate is used to specify the schedule for
+a repeating instruction. It is passed to the server when a recurring transfer or payment
+model is first created.</font> </p>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="168"><i><font SIZE="1">Tag</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="330"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="168"><b><font SIZE="1">&lt;RECURRINST&gt;</font></b> </td>
+    <td WIDTH="330"><font SIZE="2">Recurring-Instructions aggregate</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="168"><b><font SIZE="1">&lt;FREQ&gt;</font></b></td>
+    <td WIDTH="330"><font SIZE="2">Frequency, see section 10.2.1</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="168"><font SIZE="1" FACE="Arial">&lt;NINSTS&gt;</font> </td>
+    <td WIDTH="330"><font SIZE="2">Number of instructions</font> <p><font SIZE="2">If this tag
+    is absent, the schedule is open-ended,<i> N-3</i></font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="168"><b><font SIZE="1">&lt;/RECURRINST&gt;</font></b> </td>
+    <td WIDTH="330">&nbsp;</td>
+  </tr>
+</table>
+
+<ol>
+  <li><a NAME="_Toc380493361"><font SIZE="4" FACE="Arial">Values for &lt;FREQ&gt;</font></a> </li>
+</ol>
+
+<table BORDER="1">
+  <tr>
+    <td BGCOLOR="#000000" WIDTH="126"><i><font SIZE="2">Value</font></i> </td>
+    <td BGCOLOR="#000000" WIDTH="180"><i><font SIZE="2">Description</font></i> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">WEEKLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Weekly</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">BIWEEKLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Biweekly</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">TWICEMONTHLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Twice a month</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">MONTHLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Monthly</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">FOURWEEKS</font></td>
+    <td WIDTH="180"><font SIZE="2">Every four weeks</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">BIMONTHLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Bimonthly</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">QUARTERLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Quarterly</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">SEMIANNUALLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Semiannually</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">TRIANNUALLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Triannually</font> </td>
+  </tr>
+  <tr>
+    <td WIDTH="126"><font SIZE="1">ANNUALLY</font></td>
+    <td WIDTH="180"><font SIZE="2">Annually</font> </td>
+  </tr>
+</table>
+
+<p>Rules for calculating recurring dates of WEEKLY, BIWEEKLY, and TWICEMONTHLY are as
+follows: 
+
+<ul>
+  <li>WEEKLY = starting date for first transaction, starting date + 7 days for the second </li>
+  <li>TWICEMONTHLY = starting date for first, starting date + 15 days for the second </li>
+  <li>BIWEEKLY = starting date for first, starting date + 14 days for the second </li>
+</ul>
+
+<p><b>Examples:</b> </p>
+
+<p>Start date of May 2: next transaction date for WEEKLY is May 9; TWICEMONTHLY is May 17;
+next transfer date for BIWEEKLY is May 16. </p>
+
+<p>Start date of May 20: next date for WEEKLY is May 27; TWICEMONTHLY is June 4; next date
+for BIWEEKLY is June 3. </p>
+
+<p>TWICEMONTHLY recurring transactions will occur each month on those days adjusting for
+weekends and holidays. BIWEEKLY will occur every 14 days. 
+
+<ol>
+  <li><a NAME="_Toc380493362"><font SIZE="4" FACE="Arial">Examples</font></a> </li>
+</ol>
+
+<p><font SIZE="2">The following example illustrates the creation of a repeating payment.
+The payment repeats on a monthly basis for 12 months. All payments are for $395.The
+request:</font> </p>
+
+<pre>
+<font SIZE="1">.
+.
+.
+&lt;RECPMTRQ&gt;
+	&lt;RECURRINST&gt;
+		&lt;FREQ&gt;MONTHLY
+		&lt;NINSTS&gt;12
+	&lt;/RECURRINST&gt;
+	&lt;PMTINFO&gt;		
+		&lt;BANKACCTFROM&gt;
+			&lt;BANKID&gt;555432180
+			&lt;ACCTID&gt;763984
+			&lt;ACCTTYPE&gt;CHECKING
+		&lt;/BANKACCTFROM&gt;
+		&lt;TRNAMT&gt;395.00
+		&lt;PAYEEID&gt;77810
+		&lt;PAYACCT&gt;444-78-97572
+		&lt;DTDUE&gt;19971115
+		&lt;MEMO&gt;Auto loan payment
+	&lt;/PMTINFO&gt;	
+&lt;/RECPMTRQ&gt;
+.
+.
+.
+
+</font><font
+SIZE="2">The response includes the &lt;RECSRVRTID&gt;
+that the client can use 
+
+to cancel or modify the model:
+</font><font
+SIZE="1" FACE="Courier New">.
+.
+.
+&lt;RECPMTRS&gt;
+</font><font SIZE="2">	&lt;RECSRVRTID&gt;387687138	
+	&lt;RECURRINST&gt;
+		&lt;FREQ&gt;MONTHLY
+		&lt;NINSTS&gt;12
+	&lt;/RECURRINST&gt;
+	&lt;PMTINFO&gt;		
+		&lt;BANKACCTFROM&gt;
+			&lt;BANKID&gt;555432180
+			&lt;ACCTID&gt;763984
+			&lt;ACCTTYPE&gt;CHECKING
+		&lt;/BANKACCTFROM&gt;
+		&lt;TRNAMT&gt;395.00
+		&lt;PAYEEID&gt;77810
+		&lt;PAYACCT&gt;444-78-97572
+		&lt;DTDUE&gt;19971115
+		&lt;MEMO&gt;Auto loan payment
+	&lt;/PMTINFO&gt;	
+&lt;/RECPMTRS&gt;
+.
+.
+.</font>
+</pre>
+
+<ol>
+  <li><a NAME="_Toc380493363"><font SIZE="5" FACE="Arial">Retrieving Transactions Generated by
+    a Recurring Model</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Once created, a recurring model independently generates instructions.
+Since the client has not directly generated these transactions, the client has no record
+of their creation. To enable users to modify and/or cancel pending instructions, the
+client must use data synchronization in order to retrieve these transactions.</font> </p>
+
+<p><font SIZE="2">The client has two purposes for synchronizing state with the server with
+respect to recurring models:</font> 
+
+<ul>
+  <li><font SIZE="2">Retrieve any added, modified, or canceled recurring models</font> </li>
+  <li><font SIZE="2">Retrieve any added, modified, or canceled transactions generated by any
+    models</font> </li>
+</ul>
+
+<p><font SIZE="2">The client must be able to synchronize with the state of any models at
+the server, as well as the state of any transactions generated by the server.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493364"><font SIZE="5" FACE="Arial">Modifying and Canceling Individual
+    Transactions</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Once created and retrieved by the customer, recurring payments and
+transfers are almost identical to customer-created payments or transfers. As with ordinary
+payments or transfers, you can cancel or modify transactions individually. However,
+because servers generate these transfers, they are different in the following respects:</font>
+
+<ul>
+  <li><font SIZE="2">Recurring transactions must be retrieved as part of a synchronization
+    request.</font> </li>
+  <li><font SIZE="2">Recurring transactions are related to a model. A server can modify or
+    cancel transactions if the model is modified or canceled. </font></li>
+</ul>
+
+<ol>
+  <li><font SIZE="5" FACE="Arial"><a NAME="_Toc380493365">Modifying and Canceling Recurring
+    Model</a>s</font> </li>
+</ol>
+
+<p><font SIZE="2">A recurring model can be modified or canceled. When a model is modified,
+all transactions that it generates in the future will change as well. The client can
+indicate whether transactions that have been generated, but have not been sent, should be
+modified as well. The actual elements within a transaction that can be modified differ by
+service. See the recurring sections within the Banking and Payments chapters for details.</font>
+</p>
+
+<p><font SIZE="2">A user can cancel a model immediately or at a future date. If a user
+cancels the model immediately, the client cancels any transactions that it has not yet
+sent. If the client schedules the cancel for a future date, the client will not cancel
+pending transactions.</font> 
+
+<ol>
+  <li><a NAME="_Toc380493366"><font SIZE="4" FACE="Arial">Examples</font></a> </li>
+</ol>
+
+<p><font SIZE="2">Canceling a recurring payment model requires the client to pass the
+&lt;RECSRVRTID&gt; of the model. The client requests that pending payments also be
+canceled. The server cancels the model immediately and notifies the client that both the
+model and any scheduled payments were canceled.The request:</font> </p>
+
+<pre>
+<font SIZE="1">.
+.
+.
+	&lt;RECPMTCANCRQ&gt;
+		&lt;RECSRVRTID&gt;387687138
+		&lt;CANPENDING&gt;Y
+	&lt;/RECPMTCANCRQ&gt;
+.
+.
+.
+</font><font
+SIZE="2">The response:
+</font><font SIZE="1" FACE="Courier New">.
+.
+.
+	&lt;RECPMTCANCRS&gt;
+		&lt;RECSRVRTID&gt;387687138
+		&lt;CANPENDING&gt;Y
+	&lt;/RECPMTCANCRS&gt;
+.
+.
+.
+</font>
+</pre>
+
+<pre><img src="stadyn_image9.gif" width="382" height="208" alt="stadyn_image9.gif (7739 bytes)">
+stadyn_image9</pre>
+
+<p><font SIZE="2">The server also cancels any payments that have been generated but not
+executed. In the example shown above, the client would not learn of this immediately. To
+receive notification that the model and all generated payments were canceled, the client
+would need to include a synchronization request in the file. The following example
+illustrates this alternate approach.The request file now includes a synchronization
+request:</font> </p>
+
+<pre>
+<font SIZE="1">.
+.
+.
+	&lt;RECPMTCANCRQ&gt;
+		&lt;RECSRVRTID&gt;387687138
+		&lt;CANPENDING&gt;Y
+	&lt;/RECPMTCANCRQ&gt;
+	&lt;PMTSYNCRQ&gt;
+		&lt;TOKEN&gt;12345
+		&lt;BANKACCTFROM&gt;
+			&lt;BANKID&gt;123432123
+			&lt;ACCTID&gt;516273
+			&lt;ACCTTYPE&gt;CHECKING
+		&lt;/BANKACCTFROM&gt;
+	&lt;/PMTSYNCRQ&gt;
+.
+.
+.
+</font><font
+SIZE="2">The response file now contains two responses
+(assuming one payment was pending), 
+
+one for the canceled model and one for the canceled payment.
+</font><font
+SIZE="1" FACE="Courier New">.
+.
+.
+	&lt;RECPMTCANCRS&gt;
+		&lt;RECSRVRTID&gt;387687138
+		&lt;CANPENDING&gt;Y
+	&lt;/RECPMTCANCRS&gt;
+	&lt;PMTSYNCRS&gt;	
+		&lt;TOKEN&gt;3247989384
+		&lt;BANKACCTFROM&gt;
+			&lt;BANKID&gt;123432123
+			&lt;ACCTID&gt;516273
+			&lt;ACCTTYPE&gt;CHECKING
+		&lt;/BANKACCTFROM&gt;
+		&lt;PMTTRNRS&gt;
+			&lt;TRNUID&gt;10103
+			&lt;STATUS&gt;
+				&lt;CODE&gt;0
+				&lt;SEVERITY&gt;INFO
+			&lt;/STATUS&gt;
+			&lt;PMTCANCRS&gt;
+				&lt;SRVRTID&gt;1030155
+			&lt;/PMTCANCRS&gt;
+		&lt;/PMTTRNRS&gt;
+	&lt;/PMTSYNCRS&gt;
+.
+.
+.
+
+</font>
+</pre>
+
+<p><img src="stadyn_image10.gif" width="174" height="310" alt="stadyn_image10.gif (4217 bytes)"><br>
+stadyn_image10</p>
 </body>
 </html>
+
