@@ -92,6 +92,13 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
         else C.log c (
                sprintf "Objs requested in last 3s: %d" (!obj_count - !oid1));       (* For debugging *)
     scale_down c stack n
+    
+  let replica_req_timer n =
+    let _ = Time.sleep n >> Lwt.return(timeout_flag := true) in Lwt.return()
+  
+  let burst_timer n =
+    let _ = Time.sleep n >> Lwt.return(burst_count := 0) in Lwt.return()
+     
 
   (* START *)
   let start c fs stack n0 = 
@@ -145,9 +152,9 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       () in   
       Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
       let spec = H.make ~conn_closed ~callback:callback () in
-      Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));                     (**TODO: modular threads *)
-      lwt _ = Time.sleep 30.0 >> Lwt.return(timeout_flag := true) in ();            (* 30s delay for replica request *) 
-      lwt _ = Time.sleep 5.0 >> Lwt.return(burst_count := 0) in ();                 (* reset counter for incoming burst traffic *) 
+      Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));                     
+      replica_req_timer 30.0;                                                       (* delay for replica request *) 
+      burst_timer 5.0;                                                              (* reset counter for incoming burst traffic *) 
       (scale_down c stack 3.0);]                                                    (* Scale down monitor thread *)
           
 end
