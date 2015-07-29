@@ -37,7 +37,7 @@ let main =
   foreign "Dispatch.Main" (console @-> kv_ro @-> stackv4 @-> network @-> job)
 
 let () =
-  add_to_ocamlfind_libraries ["re.str";"mirage-http";];
+  add_to_ocamlfind_libraries ["re.str";"mirage-http";"rpclib";];
   add_to_opam_packages ["re";"mirage-http";];
   let sv4 = stack default_console in
   let job =  [ main $ default_console $ fs $ sv4 $ tap0 ] in
