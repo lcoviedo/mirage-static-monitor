@@ -22,7 +22,7 @@ let obj_count = ref 0
 let oid1 = ref 0
 let vm_name = ref ""
 
-let avg_array = Array.make 8 (0.0, 0.0)
+let avg_array = Array.make 128 (0.0, 0.0)
 let avg_counter = ref 0
 let exp_no = ref 0
 
