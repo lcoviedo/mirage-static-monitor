@@ -113,7 +113,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   let rec scale_down c stack n =                                                      
       oid1 := !obj_count;                                                 (* if idle for 3 secs then trigger action *)
       Time.sleep n >>= fun () ->   
-        if !oid1 = !obj_count && !timeout_flag = true then (
+        if (!oid1 = !obj_count && !timeout_flag && !delete_flag) then (
           let rpc_del = Rpc.Enum [
               Rpc.rpc_of_string "delete";
               Rpc.rpc_of_string !vm_name;
