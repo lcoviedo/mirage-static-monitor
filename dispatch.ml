@@ -22,12 +22,12 @@ let obj_count = ref 0
 let oid1 = ref 0
 let vm_name = ref ""
 
-let avg_array = Array.make 128 (0.0, 0.0)
+let avg_array = Array.make 512 (0.0, 0.0)
 let avg_counter = ref 0
 let exp_no = ref 0
 
 let h_load = 0.00019                                                          (* High threshold value *)
-let irmin_ip = "128.232.80.10" (*"10.0.0.1"*)                                                   (* Location of irmin store *)
+let irmin_ip = (*"128.232.80.10"*)"10.0.0.1"                                                   (* Location of irmin store *)
                       
 
 module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
@@ -50,8 +50,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   let http_post c ctx req uri =    
     C.log_s c (sprintf "Posting in path %s" (Uri.to_string uri)) >>= fun () ->
     HTTP.post ~ctx ~body:req uri >>= fun (resp, body) ->
-    Cohttp_lwt_body.to_string req >>= fun body ->
-    C.log_s c (sprintf "%s" body)
+    Cohttp_lwt_body.to_string req (*>>= fun body ->
+    C.log_s c (sprintf "%s" body)*)
     
   (* Conduit connection helper *)
   let conduit_conn c stack req uri=
@@ -92,11 +92,10 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
                 let uri = (Uri.of_string ("http://irmin:8080/update/jitsu/exp/" ^ !vm_name ^ "/data" ^ (string_of_int !exp_no))) in
                 conduit_conn c stack avg_rpc uri;
               );
-          if (!replicate_flag = true && !timeout_flag = true) then ( 
-            if avg > h_load then (                                                      (* above that ~ %80 cpu and likely to crash *) 
-              (*C.log c (sprintf "CREATE REPLICA   Delay=%f  counter=%d" avg !burst_count); *)        (* For debugging *)
+          if (!replicate_flag && !timeout_flag && avg > h_load) then (                          (* above that ~ %80 cpu and likely to crash *) 
+              C.log c (sprintf "CREATE REPLICA   Delay=%f  counter=%d" avg !burst_count);        (* For debugging *)
               incr burst_count;
-              if !burst_count > 1 then (                                    (* avoid replica request on a single burst *)
+              if !burst_count >= 3 (*1*) then (                                    (* avoid replica request on a single burst *)
                 let rpc_add = Rpc.Enum [
                     Rpc.rpc_of_string "add";
                     Rpc.rpc_of_string !vm_name;
@@ -105,26 +104,27 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
                 let add = Rpc.to_string rpc_add in
                 let add_vm = `String ("{\"params\":\"" ^ add ^ "\"}") in
                 let uri = (Uri.of_string ("http://irmin:8080/update/jitsu/request/" ^ !vm_name ^ "/action")) in                                           
-                conduit_conn c stack add_vm uri;
-                replicate_flag := false; ) ) ) )
-        )
+                (*conduit_conn c stack add_vm uri;*)
+                C.log c (sprintf "Posting in path %s" (Uri.to_string uri));
+                replicate_flag := (*false*) true; )
+             )  )  )
         
   (* Monitor-Scale down based on objects requested *)        
   let rec scale_down c stack n =                                                      
       oid1 := !obj_count;                                                 (* if idle for 3 secs then trigger action *)
       Time.sleep n >>= fun () ->   
-      if !oid1 = !obj_count && !timeout_flag = true then (
-        let rpc_del = Rpc.Enum [
-                    Rpc.rpc_of_string "delete";
-                    Rpc.rpc_of_string !vm_name;
-                  ] in
-        let del = Rpc.to_string rpc_del in
-        let delete_vm = `String ("{\"params\":\"" ^ del ^ "\"}") in
-        let uri = (Uri.of_string ("http://irmin:8080/update/jitsu/request/" ^ !vm_name ^ "/action")) in
-        conduit_conn c stack delete_vm uri;                                 
-        delete_flag := false;
-        (*C.log c (sprintf "LOW LOAD -> delete replica")*)                 (* For debugging *)           
-        )
+        if !oid1 = !obj_count && !timeout_flag = true then (
+          let rpc_del = Rpc.Enum [
+              Rpc.rpc_of_string "delete";
+              Rpc.rpc_of_string !vm_name;
+            ] in
+          let del = Rpc.to_string rpc_del in
+          let delete_vm = `String ("{\"params\":\"" ^ del ^ "\"}") in
+          let uri = (Uri.of_string ("http://irmin:8080/update/jitsu/request/" ^ !vm_name ^ "/action")) in
+          conduit_conn c stack delete_vm uri;                                 
+          delete_flag := false;
+          (*C.log c (sprintf "LOW LOAD -> delete replica")*)                 (* For debugging *)           
+          )
         (*else C.log c (
                sprintf "Objects requested in last 3s: %d" (!obj_count - !oid1))*);       (* For debugging *)
       scale_down c stack n 
@@ -134,8 +134,9 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   (*let request_timer n c =
     let _ = Time.sleep n >> Lwt.return(timeout_flag := true) >> Lwt.return(C.log c(sprintf "flag %b" !timeout_flag)) in Lwt.return()*)
  
-  let burst_timer n =
-    let _ = Time.sleep n >> Lwt.return(burst_count := 0) in Lwt.return()
+  let rec burst_timer n =
+    Time.sleep n >>= fun () -> burst_count := 0; burst_timer n
+      
 
   (* START *)
   let start c fs stack n0 = 
@@ -192,7 +193,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));                     
       (request_timer 5.0 c stack ); (**30.0*)         (* delay for replica/delete requests *) 
       (*request_timer 10.0 c >> (scale_down c stack 5.0);*)
-      burst_timer 5.0;                                                              (* reset counter for incoming burst traffic *) 
+      burst_timer 5.0  (*2.5*);                                                 (* reset counter for incoming burst traffic *) 
       (*(scale_down c stack 3.0);*)]                                                    (* Scale down monitor thread *)
           
 end
