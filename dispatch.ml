@@ -104,9 +104,9 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
                 let add = Rpc.to_string rpc_add in
                 let add_vm = `String ("{\"params\":\"" ^ add ^ "\"}") in
                 let uri = (Uri.of_string ("http://irmin:8080/update/jitsu/request/" ^ !vm_name ^ "/action")) in                                           
-                (*conduit_conn c stack add_vm uri;*)
+                conduit_conn c stack add_vm uri;
                 C.log c (sprintf "Posting in path %s" (Uri.to_string uri));
-                replicate_flag := (*false*) true; )
+                replicate_flag := false; )
              )  )  )
         
   (* Monitor-Scale down based on objects requested *)        
