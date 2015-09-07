@@ -26,7 +26,8 @@ let sum_avg_array = Array.make 16 0.0
 let avg_array = Array.make 256 (0.0, 0.0)  (* For expermiental purposes *)
 let avg_counter = ref 0
 let exp_no = ref 0
-let h_load = 0.000100 (* 100 micro seconds - High threshold value *)
+let high_load = 0.000100 (* 100 micro seconds - High threshold value *)
+let low_load = 150 (* average object request per second rate  - Low threshold value *)
 let irmin_ip = (*"128.232.80.10"*) "10.0.0.1" (* Location of irmin store *)
 let irmin_port = ref 0
 let irmin_1 = ["12:43:3d:a3:d3:02"; "12:43:3d:a3:d3:03"; "12:43:3d:a3:d3:04"; "12:43:3d:a3:d3:05"; 
@@ -110,7 +111,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
               (Array.fold_right (+.) sum_avg_array 0.0) /. float(Array.length sum_avg_array) in (* Sum Avg of 16 values of 64 avgs *)
               t_avg := Clock.time();  (* part of experiment *)
               C.log c (sprintf "Avg delay = %f" sum_avg);
-              if sum_avg >= h_load then (
+              if sum_avg >= high_load then (
               let rpc_add = Rpc.Enum [
                   Rpc.rpc_of_string "add";
                   Rpc.rpc_of_string !vm_name;
@@ -148,7 +149,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   let rec scale_down c stack n =                                                      
     oid := !obj_count;
     Time.sleep n >>= fun () ->
-    if !oid = !obj_count then (
+    let avg_objreq = (!obj_count - !oid)/5 in
+    if avg_objreq < low_load then (
       let rpc_del = Rpc.Enum [
           Rpc.rpc_of_string "delete";
           Rpc.rpc_of_string !vm_name;
@@ -160,7 +162,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       C.log c (sprintf "LOW LOAD -> delete replica")  (* For debugging *)
     );
     (*else C.log c (sprintf "Objects requested in last 5s: %d" (!obj_count - !oid));*) (* For debugging *)
-    C.log c (sprintf "avg objects/sec: %d" ((!obj_count - !oid)/5));
+    C.log c (sprintf "avg objects/sec: %d" avg_objreq);
     scale_down c stack n
 
   (* START *)
