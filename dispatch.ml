@@ -21,7 +21,6 @@ let vm_name = ref ""
 let t_start = ref 0.0
 let irmin_task = "{\"task\":{\"date\":\"0\",\"uid\":\"0\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
 let avg_flag = ref false  (*flag to sum up consecutive avg values once the 16 array is full*)
-let http_string = ref ""
 let initial_xs = ref ""
 let sum_avg_array = Array.make 16 0.0
 let avg_array = Array.make 256 (0.0, 0.0)  (* For expermiental purposes *)
@@ -144,6 +143,9 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
         
   (* Monitor-Scale down based on objects requested *)
   let rec scale_down c stack n =                                                      
+    let uri = (Uri.of_string ("http://" ^ !initial_xs ^ "/read/jitsu/vm/static-web/num_of_reps")) in
+    lwt num_of_reps = http_get c stack uri in
+    C.log c (sprintf "Number of replicas: %s" num_of_reps); 
     oid := !obj_count;
     Time.sleep n >>= fun () ->
     let avg_objreq = (!obj_count - !oid)/5 in
@@ -164,7 +166,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
 
   (* START *)
   let start c fs stack n0 =
-    let _ = vm_name := Macaddr.to_string (N0.mac n0) in
+    vm_name := Macaddr.to_string (N0.mac n0);
     let uri = (Uri.of_string ("http://irmin/read/jitsu/" ^ !vm_name ^ "/initial_xs")) in
     lwt get_initial_xs = http_get c stack uri in
     let _ = initial_xs := get_initial_xs in
