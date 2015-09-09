@@ -63,15 +63,6 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     Cohttp_lwt_body.to_string req >>= fun body -> 
     C.log_s c (sprintf ("Posting:%s in path %s") body (Uri.to_string uri))
 
-  (*let http_get c ctx uri =
-    C.log_s c (sprintf "Fetching %s:" (Uri.to_string uri)) >>= fun () ->
-    HTTP.get ~ctx uri >>= fun (response, body) ->
-    Cohttp_lwt_body.to_string body >>= fun body ->
-      let _ = C.log_s c (sprintf "Response: %s" (body)) in
-      let str = Re_str.replace_first (Re_str.regexp ".*\\[") "" body in
-      let str_value = Re_str.replace_first (Re_str.regexp "\\].*") "" str in
-      C.log_s c (sprintf "Value: %s" str_value) >>= fun () -> Lwt.return(str_value)*)
- 
   (* Conduit connection helper *)
   let conduit_conn c stack req uri =
     Lwt.ignore_result (
@@ -79,13 +70,6 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       let res = Resolver_mirage.static (irmin_store !vm_name) in
       let ctx = HTTP.ctx res conduit in
       http_post c ctx req uri)
-
-  (* To be replaced *)      
-  (*let conduit_get c stack uri =
-    lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
-    let res = Resolver_mirage.static (irmin_store !vm_name) in
-    let ctx = HTTP.ctx res conduit in
-    http_get c ctx uri*)
 
   let http_get c stack uri =
     lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
@@ -182,7 +166,6 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   let start c fs stack n0 =
     let _ = vm_name := Macaddr.to_string (N0.mac n0) in
     let uri = (Uri.of_string ("http://irmin/read/jitsu/" ^ !vm_name ^ "/initial_xs")) in
-    (*lwt get_initial_xs = conduit_get c stack uri in*)
     lwt get_initial_xs = http_get c stack uri in
     let _ = initial_xs := get_initial_xs in
     C.log c (sprintf "Initial XS: %s" !initial_xs); (* For debugging *)
