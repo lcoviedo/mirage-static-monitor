@@ -22,6 +22,7 @@ let t_start = ref 0.0
 let irmin_task = "{\"task\":{\"date\":\"0\",\"uid\":\"0\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
 let avg_flag = ref false  (*flag to sum up consecutive avg values once the 16 array is full*)
 let http_string = ref ""
+let initial_xs = ref ""
 let sum_avg_array = Array.make 16 0.0
 let avg_array = Array.make 256 (0.0, 0.0)  (* For expermiental purposes *)
 let avg_counter = ref 0
@@ -47,7 +48,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   let stackv4 = Conduit_mirage.stackv4 (module S)
    
   (* Manual resolver for irmin ip and port *)  
-  let irmin_store mac=
+  let irmin_store mac =
     let find_port = List.exists (fun x -> mac = x) irmin_1 in
     if find_port = true then (irmin_port := 8080 ) else (irmin_port := 8081); 
     let hosts = Hashtbl.create 3 in
@@ -62,17 +63,17 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     Cohttp_lwt_body.to_string req >>= fun body -> 
     C.log_s c (sprintf ("Posting:%s in path %s") body (Uri.to_string uri))
 
-  let http_get c ctx uri =
+  (*let http_get c ctx uri =
     C.log_s c (sprintf "Fetching %s:" (Uri.to_string uri)) >>= fun () ->
     HTTP.get ~ctx uri >>= fun (response, body) ->
     Cohttp_lwt_body.to_string body >>= fun body ->
       let _ = C.log_s c (sprintf "Response: %s" (body)) in
       let str = Re_str.replace_first (Re_str.regexp ".*\\[") "" body in
       let str_value = Re_str.replace_first (Re_str.regexp "\\].*") "" str in
-      C.log_s c (sprintf "Value: %s" (str_value)) >>= fun () -> Lwt.return(str_value)
+      C.log_s c (sprintf "Value: %s" str_value) >>= fun () -> Lwt.return(str_value)*)
  
   (* Conduit connection helper *)
-  let conduit_conn c stack req uri=
+  let conduit_conn c stack req uri =
     Lwt.ignore_result (
       lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
       let res = Resolver_mirage.static (irmin_store !vm_name) in
@@ -80,12 +81,24 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       http_post c ctx req uri)
 
   (* To be replaced *)      
-  let conduit_get c stack uri=
+  (*let conduit_get c stack uri =
     lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
     let res = Resolver_mirage.static (irmin_store !vm_name) in
     let ctx = HTTP.ctx res conduit in
-    http_get c ctx uri
-     
+    http_get c ctx uri*)
+
+  let http_get c stack uri =
+    lwt conduit = Conduit_mirage.with_tcp Conduit_mirage.empty stackv4 stack in
+    let res = Resolver_mirage.static (irmin_store !vm_name) in
+    let ctx = HTTP.ctx res conduit in
+    C.log_s c (sprintf "Fetching %s:" (Uri.to_string uri)) >>= fun () ->
+    HTTP.get ~ctx uri >>= fun (response, body) ->
+    Cohttp_lwt_body.to_string body >>= fun body ->
+      let _ = C.log_s c (sprintf "Response: %s" (body)) in
+      let str = Re_str.replace_first (Re_str.regexp ".*\\[") "" body in
+      let str_value = Re_str.replace_first (Re_str.regexp "\\].*") "" str in
+      C.log_s c (sprintf "Value: %s" str_value) >>= fun () -> Lwt.return(str_value)
+   
   (* Monitor-Scale up based on request/reply times *)
   let scale_up c stack =
     Lwt.return (
@@ -119,7 +132,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
                 ] in
               let add = Rpc.to_string rpc_add in
               let add_vm = `String (irmin_task ^ add ^ "\"}") in
-              let uri = (Uri.of_string ("http://irmin:8080/update/jitsu/request/" ^ !vm_name ^ "/action")) in
+              let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ !vm_name ^ "/action")) in
               conduit_conn c stack add_vm uri;
               C.log c (sprintf "CREATE REPLICA........");
               (*C.log c (sprintf "Posting in path %s" (Uri.to_string uri));*)
@@ -139,7 +152,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
               ] in
             let rpc_avg_string = Rpc.to_string rpc_avg_array in
             let avg_rpc = `String (irmin_task ^ rpc_avg_string ^ "\"}") in
-            let uri = (Uri.of_string ("http://irmin:8080/update/jitsu/exp/" ^ !vm_name ^ "/data" ^ (string_of_int !exp_no))) in
+            let uri = (Uri.of_string ("http://irmin/update/jitsu/exp/" ^ !vm_name ^ "/data" ^ (string_of_int !exp_no))) in
             conduit_conn c stack avg_rpc uri; )
            )
          )
@@ -158,8 +171,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       let del = Rpc.to_string rpc_del in
       let delete_vm = `String (irmin_task ^ del ^ "\"}") in
       let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ !vm_name ^ "/action")) in
-      conduit_conn c stack delete_vm uri;
-      C.log c (sprintf "LOW LOAD -> delete replica")  (* For debugging *)
+      (*conduit_conn c stack delete_vm uri;*)
+      C.log c (sprintf "LOW LOAD -> delete replica") (* For debugging *)
     );
     (*else C.log c (sprintf "Objects requested in last 5s: %d" (!obj_count - !oid));*) (* For debugging *)
     C.log c (sprintf "avg objects/sec: %d" avg_objreq);
@@ -169,8 +182,10 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   let start c fs stack n0 =
     let _ = vm_name := Macaddr.to_string (N0.mac n0) in
     let uri = (Uri.of_string ("http://irmin/read/jitsu/" ^ !vm_name ^ "/initial_xs")) in
-    lwt initial_xs = (conduit_get c stack uri) in
-    let _ = C.log_s c (sprintf "Initial XS: %s" (initial_xs)) in
+    (*lwt get_initial_xs = conduit_get c stack uri in*)
+    lwt get_initial_xs = http_get c stack uri in
+    let _ = initial_xs := get_initial_xs in
+    C.log c (sprintf "Initial XS: %s" !initial_xs); (* For debugging *)
     Lwt.join[(
         let read_fs name =
           FS.size fs name >>= function
