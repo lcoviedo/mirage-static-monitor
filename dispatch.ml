@@ -109,7 +109,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
                 ] in
               let add = Rpc.to_string rpc_add in
               let add_vm = `String (irmin_task ^ add ^ "\"}") in
-              let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/action")) in
+              let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/request")) in
               http_post c stack uri add_vm;
               C.log c (sprintf "CREATE REPLICA........");
             );
@@ -155,7 +155,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
          ] in
       let del = Rpc.to_string rpc_del in
       let del_vm = `String (irmin_task ^ del ^ "\"}") in
-      let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/action")) in
+      let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/request")) in
       (*http_post c stack uri del_vm;*)
       C.log c (sprintf "LOW LOAD -> delete replica") (* For debugging *)
     );
