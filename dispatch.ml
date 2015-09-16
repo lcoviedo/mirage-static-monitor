@@ -26,7 +26,7 @@ let exp_no = ref 0
 let high_load = 0.000100  (* 100 micro seconds - High threshold value *)
 let low_load = 150  (* average object request per second rate  - Low threshold value *)
 let max_objreq = 385.0
-let irmin_ip = (*"128.232.80.10"*) "10.0.0.1"  (* Location of irmin store *)
+let irmin_ip = "128.232.80.10" (*"10.0.0.1"*)  (* Location of irmin store *)
 let irmin_port = ref 0
 let irmin_1 = ["12:43:3d:a3:d3:02"; "12:43:3d:a3:d3:03"; "12:43:3d:a3:d3:04"; "12:43:3d:a3:d3:05"; 
                "12:43:3d:a3:d3:06"; "12:43:3d:a3:d3:07"; "12:43:3d:a3:d3:08"; "12:43:3d:a3:d3:09";
@@ -57,23 +57,23 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   
   let http_get c stack uri =
     lwt (conduit, ctx) = conduit_conn stack in
-    C.log_s c (sprintf "Fetching %s:" (Uri.to_string uri)) >>= fun () ->
+    (*C.log_s c (sprintf "Fetching %s:" (Uri.to_string uri)) >>= fun () ->*) (* debugging *)
     HTTP.get ~ctx uri >>= fun (response, body) ->
     Cohttp_lwt_body.to_string body >>= fun body ->
-      let _ = C.log_s c (sprintf "Response: %s" (body)) in
+      (*let _ = C.log_s c (sprintf "Response: %s" (body)) in*) (* debugging *)
       let str = Re_str.replace_first (Re_str.regexp ".*\\[\"") "" body in
       let str_value = Re_str.replace_first (Re_str.regexp "\"\\].*") "" str in
-      (*C.log_s c (sprintf "Value: %s" str_value) >>= fun () ->*)
+      (*C.log_s c (sprintf "Value: %s" str_value) >>= fun () ->*) (* debugging *)
       Lwt.return(str_value)
 
   (* Send request/posts to Irmin *)
   let http_post c stack uri req =    
     Lwt.ignore_result (
       lwt (conduit, ctx) = conduit_conn stack in
-      (*C.log_s c (sprintf "Posting in path %s" (Uri.to_string uri)) >>= fun () ->*)
+      (*C.log_s c (sprintf "Posting in path %s" (Uri.to_string uri)) >>= fun () ->*) (* debugging *)
       HTTP.post ~ctx ~body:req uri >>= fun (resp, body) ->
       Cohttp_lwt_body.to_string req >>= fun body -> 
-      C.log_s c (sprintf ("Posting:%s in path %s") body (Uri.to_string uri))
+      C.log_s c (sprintf ("Posting:%s in path %s") body (Uri.to_string uri)) (* debugging *)
       )
   
   (* Monitor-Scale up based on request/reply times *)
@@ -100,10 +100,10 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
             let sum_avg =
               (Array.fold_right (+.) sum_avg_array 0.0) /. float(Array.length sum_avg_array) in (* Sum Avg of 16 values of 64 avgs *)
               t_avg := Clock.time();  (* part of experiment *)
-              C.log c (sprintf "Avg delay = %f" sum_avg);
+              (*C.log c (sprintf "Avg delay = %f" sum_avg);*) (* debugging *)
               if sum_avg >= high_load then (
               let rpc_add = Rpc.Enum [
-                  Rpc.rpc_of_string "add";
+                  Rpc.rpc_of_string "add_vm";
                   Rpc.rpc_of_string vm_name;
                   Rpc.rpc_of_string "static-web";
                 ] in
@@ -142,7 +142,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     (* Read number of replicas *)
     let uri = (Uri.of_string ("http://initial_xs/read/jitsu/vm/static-web/num_of_reps")) in
     lwt num_of_reps = http_get c stack uri in
-    C.log c (sprintf "Number of replicas: %s" num_of_reps);
+    (*C.log c (sprintf "Number of replicas: %s" num_of_reps);*) (* debugging *)
     let avg_objreq = (!obj_count - !oid)/5 in
     (*
     let low_val = (1.0 -. 1.0/float_of_string(num_of_reps)) *. (max_objreq *. 0.70) in
@@ -150,13 +150,13 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     *)
     if avg_objreq < low_load then (
       let rpc_del = Rpc.Enum [
-          Rpc.rpc_of_string "delete";
+          Rpc.rpc_of_string "del_vm";
           Rpc.rpc_of_string vm_name;
          ] in
       let del = Rpc.to_string rpc_del in
-      let delete_vm = `String (irmin_task ^ del ^ "\"}") in
+      let del_vm = `String (irmin_task ^ del ^ "\"}") in
       let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/action")) in
-      (*http_post c stack uri delete_vm;*)
+      (*http_post c stack uri del_vm;*)
       C.log c (sprintf "LOW LOAD -> delete replica") (* For debugging *)
     );
     (*else C.log c (sprintf "Objects requested in last 5s: %d" (!obj_count - !oid));*) (* For debugging *)
