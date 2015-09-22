@@ -93,6 +93,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       req_sec_array.(!k) <- (!t_req,req_sec);
       incr k;
       let _ =
+      (* Scale out *)
       if req_sec >= high_load then (
         let rpc_add = Rpc.Enum [
             Rpc.rpc_of_string "add_vm";
@@ -104,8 +105,21 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
         let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/request")) in
         http_post c stack uri add_vm;
         replicate_flag := false;
-        C.log c (sprintf "CREATE REPLICA........")
+        C.log c (sprintf "CREATE REPLICA........")  (* For debugging *)
         )
+      (* Scale back *)
+      else if req_sec <= low_load then (
+        let rpc_del = Rpc.Enum [
+            Rpc.rpc_of_string "del_vm";
+            (*Rpc.rpc_of_string vm_name;*)
+            Rpc.rpc_of_string (sprintf "%f" !t_req);
+          ] in
+        let del = Rpc.to_string rpc_del in
+        let del_vm = `String (irmin_task ^ del ^ "\"}") in
+        let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/request")) in
+        (*http_post c stack uri del_vm;*)  (*TODO add control to delete requests *)
+        C.log c (sprintf "LOW LOAD -> delete replica: %d" req_sec)  (* For debugging *)
+      )
       else ()
       in
       monitoring c stack vm_name n
