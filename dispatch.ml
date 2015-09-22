@@ -151,22 +151,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     (*
     let low_val = (1.0 -. 1.0/float_of_string(num_of_reps)) *. (max_objreq *. 0.70) in
     if low_val <= 0.60 then ( 
-    *)
-    (*
-    if avg_objreq < low_load then (
-      let rpc_del = Rpc.Enum [
-          Rpc.rpc_of_string "del_vm";
-          (*Rpc.rpc_of_string vm_name;*)
-         ] in
-      let del = Rpc.to_string rpc_del in
-      let del_vm = `String (irmin_task ^ del ^ "\"}") in
-      let uri = (Uri.of_string ("http://irmin/update/jitsu/request/" ^ vm_name ^ "/request")) in
-      (*http_post c stack uri del_vm;*)
-      C.log c (sprintf "LOW LOAD -> delete replica: %d" avg_objreq) (* For debugging *)
-    );
-    (*else C.log c (sprintf "Objects requested in last 5s: %d" (!obj_count - !oid));*) (* For debugging *)
-    *)
-    C.log c (sprintf "avg objects/sec: %d" avg_objreq); *)
+    *) *)
 
   let rec replicate_timer n c =
     Time.sleep n >>= fun () -> 
