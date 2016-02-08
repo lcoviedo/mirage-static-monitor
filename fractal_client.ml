@@ -7,7 +7,7 @@ let irmin_task = "{\"task\":{\"date\":\"0\",\"uid\":\"0\",\"owner\":\"\",\"messa
 
 let host_table =
   Hashtbl.create 3
-	
+
 (** *) (*It will need to add the irmin ip to the host table*)
 
 (*type error
@@ -35,7 +35,7 @@ let http_post t req =
     let (conduit, ctx) = t.conduit_helper in
     HTTP.post ~ctx ~body:req t.uri >>= fun (resp, body) ->
     Cohttp_lwt_body.to_string req >>= fun body -> 
-		printf ("Posting in path %s") (Uri.to_string t.uri); (* debugging *)
+    printf ("Posting in path %s") (Uri.to_string t.uri); (* debugging *)
     Lwt.return ()
 
 let replicate t =
@@ -49,19 +49,19 @@ let replicate t =
   let add_vm = `String (irmin_task ^ add ^ "\"}") in
   (*http_post t add_vm*)
   lwt x = Cohttp_lwt_body.to_string (add_vm) in
-	  Lwt.return (printf "%s" x)
+  Lwt.return (printf "%s" x)
 
 let halt t =
   t_req := Clock.time();
   printf "\nHalt event";
-	let rpc_halt = Rpc.Enum [
-		  Rpc.rpc_of_string "halt_vm";
-		  Rpc.rpc_of_string (sprintf "%f" !t_req);
-		] in
+  let rpc_halt = Rpc.Enum [
+      Rpc.rpc_of_string "halt_vm";
+      Rpc.rpc_of_string (sprintf "%f" !t_req);
+    ] in
   let halt_vm = `String (irmin_task ^ (Rpc.to_string rpc_halt) ^ "\"}") in
-	(*http_post t halt_vm*)
-	lwt x = Cohttp_lwt_body.to_string (halt_vm) in
-	  Lwt.return (printf "%s" x)
+  (*http_post t halt_vm*)
+  lwt x = Cohttp_lwt_body.to_string (halt_vm) in
+  Lwt.return (printf "%s" x)
 
 let die t =
   t_req := Clock.time();
@@ -73,19 +73,19 @@ let die t =
   let del = Rpc.to_string rpc_del in
   let del_vm = `String (irmin_task ^ del ^ "\"}") in
   (*http_post t del_vm*)
-	lwt x = Cohttp_lwt_body.to_string (del_vm) in
-	  Lwt.return (printf "%s" x)
+  lwt x = Cohttp_lwt_body.to_string (del_vm) in
+  Lwt.return (printf "%s" x)
 
 let post_results t stats_array = (* post_results must wait ~10 secs to report results *)
-	incr set_exp;
-	t_req := Clock.time();
-	printf "\n\nResults %d" !set_exp;
-	let rpc_results = Rpc.Enum [
-		  Rpc.rpc_of_string (Array.fold_right (fun (x, y, z) acc ->
-				  (string_of_float x)^" "^(sprintf "%d" y)^" "^z^";"^acc) stats_array "")
-		] in
-	let rpc_string = Rpc.to_string rpc_results in
-	let results = `String (irmin_task ^ rpc_string ^ "\"}") in
-	(*http_post t results*)
-	lwt x = Cohttp_lwt_body.to_string (results) in
-		Lwt.return (printf "%s" x)
+  incr set_exp;
+  t_req := Clock.time();
+  printf "\n\nResults %d" !set_exp;
+  let rpc_results = Rpc.Enum [
+      Rpc.rpc_of_string (Array.fold_right (fun (x, y, z) acc ->
+        (string_of_float x)^" "^(sprintf "%d" y)^" "^z^";"^acc) stats_array "")
+    ] in
+  let rpc_string = Rpc.to_string rpc_results in
+  let results = `String (irmin_task ^ rpc_string ^ "\"}") in
+  (*http_post t results*)
+  lwt x = Cohttp_lwt_body.to_string (results) in
+  Lwt.return (printf "%s" x)

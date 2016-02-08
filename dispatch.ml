@@ -65,12 +65,12 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   if !k < (int_of_float n) then (
     t_req := Clock.time();
     Time.sleep 1.0 >>= fun () ->
-		let stats = (H.get_stats spec) in (* get_stats function from modified cohttp *)
-		  let (failed, rps, active, rt_list) = stats in
-			let rt_rpc = Rpc.Enum [
-				  Rpc.rpc_of_string (List.fold_right (fun (x) acc -> (string_of_float x)^" ;"^acc) rt_list "")
-				] in
-			let rt = Rpc.to_string rt_rpc in
+    let stats = (H.get_stats spec) in (* get_stats function from modified cohttp *)
+      let (failed, rps, active, rt_list) = stats in
+      let rt_rpc = Rpc.Enum [
+          Rpc.rpc_of_string (List.fold_right (fun (x) acc -> (string_of_float x)^" ;"^acc) rt_list "")
+        ] in
+      let rt = Rpc.to_string rt_rpc in
     stats_array.(!k) <- (!t_req,rps,rt);
     incr k;
     let _ =
@@ -83,27 +83,27 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     (* Scale back *)
       else if (rps <= low_load && !replicate_flag = true) then (
         C.log c (sprintf "DELETE REPLICA!: %d" rps);
-			  die t >>= fun () ->
-			  Lwt.return (replicate_flag := false) (** Fail if http_post hangs out **)
+        die t >>= fun () ->
+        Lwt.return (replicate_flag := false) (** Fail if http_post hangs out **)
       )
-		(* Halt event *) (**TODO -> Enable halt with correct conditions*)
-		(*
-		  else if (rps < high_load && rps > (*low_load*) 1 && rt >= 0.0001) then (
-			  halt t >>= fun () ->
-			  C.log_s c (sprintf "HALT EVENT -> stop sending new traffic");
-		  )
-		*)
+    (* Halt event *) (**TODO -> Enable halt with correct conditions*)
+    (*
+      else if (rps < high_load && rps > (*low_load*) 1 && rt >= 0.0001) then (
+        halt t >>= fun () ->
+        C.log_s c (sprintf "HALT EVENT -> stop sending new traffic");
+      )
+  *)
       else (
-			  C.log_s c (sprintf "debug")
+        C.log_s c (sprintf "debug")
       )
     in
     monitoring spec stack t n c
   )
   else ( (* Post statistics results *)
-		k := 0; (** TODO -> Fix Uri for results*)
-		lwt x = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_dataset in
-		let _ =
-			post_results x stats_array in
+    k := 0; (** TODO -> Fix Uri for results*)
+    lwt x = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_dataset in
+    let _ =
+      post_results x stats_array in
     monitoring spec stack t n c
   )
  
@@ -161,14 +161,14 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
         in
         let conn_closed (_,conn_id) (result) = (* result is added to comply with modified cohttp library *)
           let cid = Cohttp.Connection.to_string conn_id in
-          (*C.log c (sprintf "conns closed: %s" cid);*)				
-					()
+          (*C.log c (sprintf "conns closed: %s" cid);*)
+          ()
           in
         Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
         let spec = H.make ~conn_closed ~callback:callback () in
         Lwt.join[( 
-				  Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));
+          Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));
           (replicate_timer 10.0 c); (** Change timer *)
           (monitoring spec stack t 10.0 c); (* Scale events thread *)
-				]
+        ]
 end
