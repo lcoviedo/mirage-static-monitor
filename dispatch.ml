@@ -9,19 +9,16 @@ let green fmt  = sprintf ("\027[32m"^^fmt^^"\027[m")
 let yellow fmt = sprintf ("\027[33m"^^fmt^^"\027[m")
 let blue fmt   = sprintf ("\027[36m"^^fmt^^"\027[m")
 
-(*let t0 = ref 0.0*)
+let rt = ref 0.0
 let t_req = ref 0.0
 let k = ref 0
-let req_sec_array = Array.make 10 (0.0, 0)
-let obj_count = ref 0
-let oid = ref 0
+let stats_array = Array.make 10 (0.0, 0, "")
 let uri_req = (Uri.of_string ("http://irmin/update/jitsu/request/"))
-let avg_flag = ref false  (*flag to sum up consecutive avg values once the 16 array is full*)
-(*let exp_no = ref 0*)
+let uri_dataset = (Uri.of_string ("http://irmin:8080/update/jitsu/exp/"))
 let replicate_flag = ref false
 let high_load = 1000  (* 1000 requests per second - High threshold value *)
 let low_load = 100  (* 100 requests per second rate - Low threshold value *)
-let irmin_ip = (*"128.232.80.10"*) "128.243.23.190" (*"10.0.0.1"*)  (* Location of irmin store *)
+let irmin_ip = "127.0.0.1"  (* Location of irmin store *)
 let irmin_port = ref 0
 let irmin_1 = ["12:43:3d:a3:d3:02"; "12:43:3d:a3:d3:03"; "12:43:3d:a3:d3:04"; "12:43:3d:a3:d3:05"; 
                "12:43:3d:a3:d3:06"; "12:43:3d:a3:d3:07"; "12:43:3d:a3:d3:08"; "12:43:3d:a3:d3:09";
@@ -36,7 +33,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   module H   = Cohttp_mirage.Server(Conduit_mirage.Flow)
   module HTTP = Cohttp_mirage.Client
    
-  let cond_empty = Conduit_mirage.empty
+  let conduit = Conduit_mirage.empty
   let stackv4 = Conduit_mirage.stackv4 (module S)
 
 (* Host table to resolve local and initial irmin *)  
@@ -46,7 +43,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
 (** Move http_get *)
   (* Conduit connection helper *) 
   let conduit_conn stack =
-    lwt conduit = Conduit_mirage.with_tcp cond_empty stackv4 stack in
+    lwt conduit = Conduit_mirage.with_tcp conduit stackv4 stack in
       let res = Resolver_mirage.static host_table in
       let ctx = HTTP.ctx res conduit in 
       Lwt.return (conduit,ctx)
@@ -62,40 +59,52 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       C.log_s c (sprintf "Value: %s" str_value) >>= fun () -> (* debugging *)
       Lwt.return(str_value)
 
-  (* Monitor-Scale down based on objects requested *)
-  let rec monitoring t n c =  (* n equals 10 which is the lenght of rps array*)
-  (* get requests per second *)
+  (* Monitoring function *)
+  let rec monitoring spec stack t n c =  (* n equals 10 which is the lenght of rps array*)
+  (* get requests per second and response times *)
   if !k < (int_of_float n) then (
-    oid := !obj_count;
     t_req := Clock.time();
     Time.sleep 1.0 >>= fun () ->
-    let req_sec = (!obj_count - !oid) in
-    req_sec_array.(!k) <- (!t_req,req_sec);
+		let stats = (H.get_stats spec) in (* get_stats function from modified cohttp *)
+		  let (failed, rps, active, rt_list) = stats in
+			let rt_rpc = Rpc.Enum [
+				  Rpc.rpc_of_string (List.fold_right (fun (x) acc -> (string_of_float x)^" ;"^acc) rt_list "")
+				] in
+			let rt = Rpc.to_string rt_rpc in
+    stats_array.(!k) <- (!t_req,rps,rt);
     incr k;
     let _ =
     (* Scale out *)
-    if req_sec >= high_load then (
-      replicate t >>= fun () ->
-      replicate_flag := false;
-      C.log_s c (sprintf "CREATE REPLICA........")  (* debugging *)
-    )
+      if (rps >= high_load && !replicate_flag = true) then (
+        replicate t >>= fun () ->
+        replicate_flag := false;
+        C.log_s c (sprintf "CREATE REPLICA........")  (* debugging *)
+      )
     (* Scale back *)
-    else if req_sec <= low_load then (
-      C.log c (sprintf "LOW LOAD -> delete replica: %d" req_sec);
-      lwt () = die t in Lwt.return ()  (* equivalent to: die t >>= fun () ->*)
-      (*C.log_s c (sprintf "LOW LOAD -> delete replica: %d" req_sec)  (* debugging *)*)
-    )
-    else (
-      C.log c (sprintf "debug");
-      Lwt.return()
-    )
+      else if (rps <= low_load && !replicate_flag = true) then (
+        C.log c (sprintf "DELETE REPLICA!: %d" rps);
+			  die t >>= fun () ->
+			  Lwt.return (replicate_flag := false) (** Fail if http_post hangs out **)
+      )
+		(* Halt event *) (**TODO -> Enable halt with correct conditions*)
+		(*
+		  else if (rps < high_load && rps > (*low_load*) 1 && rt >= 0.0001) then (
+			  halt t >>= fun () ->
+			  C.log_s c (sprintf "HALT EVENT -> stop sending new traffic");
+		  )
+		*)
+      else (
+			  C.log_s c (sprintf "debug")
+      )
     in
-    monitoring t n c
+    monitoring spec stack t n c
   )
-  else (
-    k :=0;
-    (* Add post results block*)
-    monitoring t n c
+  else ( (* Post statistics results *)
+		k := 0; (** TODO -> Fix Uri for results*)
+		lwt x = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_dataset in
+		let _ =
+			post_results x stats_array in
+    monitoring spec stack t n c
   )
  
   let rec replicate_timer n c =
@@ -110,12 +119,11 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     if find_port = true then (irmin_port := 8081 ) else (irmin_port := 8080);
     Hashtbl.add host_table "irmin"
       (fun ~port -> `TCP (Ipaddr.of_string_exn irmin_ip, !irmin_port)); (** enable initial_xs *)
-    (*let uri = (Uri.of_string ("http://irmin/update/read/jitsu/" ^ vm_name ^ "/initial_xs")) in (** double check uri *)
+    let uri = (Uri.of_string ("http://irmin/update/read/jitsu/" ^ vm_name ^ "/initial_xs")) in (** double check uri *)
     lwt initial_xs = http_get c stack uri in
     Hashtbl.add host_table "initial_xs"     
-      (fun ~port -> `TCP (Ipaddr.of_string_exn initial_xs, 8080));*)
-    lwt t = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) (*c*) stack uri_req in (* initialise t*)
-    Lwt.join[(
+      (fun ~port -> `TCP (Ipaddr.of_string_exn initial_xs, 8080));
+    lwt t = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_req in (* initialise t*)
         let read_fs name =
           FS.size fs name >>= function
           | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
@@ -139,34 +147,28 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
           | [] | [""] -> dispatcher ["index.html"]
           | segments -> 
             let path = String.concat "/" segments in 
-            incr obj_count;
             Lwt.catch (fun () -> 
                 read_fs path >>= fun body ->                
-                (*log := !log ^ "200 OK;";*)
-                (*C.log c (sprintf "After serving:\n%s" !log);*)
-                (* Extract body length here *)
                 H.respond_string ~status:`OK ~body ()   
               )  (fun exn ->
-                (*log := !log ^ "404 Not Found;";*)
-                (*C.log c (sprintf "Error entry:\n%s" !log);*)
                 H.respond_not_found ()
               )
         in
         (* HTTP callback *)
         let callback conn_id request body =
-          (*t0 := Time.Monotonic.to_seconds(Time.Monotonic.time());*) (*to use for logging *)
           let uri = Cohttp.Request.uri request in
-          dispatcher (split_path uri)          
+          dispatcher (split_path uri)
         in
-        let conn_closed (_,conn_id) =
+        let conn_closed (_,conn_id) (result) = (* result is added to comply with modified cohttp library *)
           let cid = Cohttp.Connection.to_string conn_id in
-          ()          
+          (*C.log c (sprintf "conns closed: %s" cid);*)				
+					()
           in
-        Conduit_mirage.with_tcp cond_empty stackv4 stack >>= fun conduit ->
+        Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
         let spec = H.make ~conn_closed ~callback:callback () in
-        Conduit_mirage.listen cond_empty (`TCP 80) (H.listen spec));
-        (replicate_timer 5.0 c);
-        (monitoring t 10.0 c); (* Scale events thread *)
-        ]
-
+        Lwt.join[( 
+				  Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));
+          (replicate_timer 10.0 c); (** Change timer *)
+          (monitoring spec stack t 10.0 c); (* Scale events thread *)
+				]
 end
