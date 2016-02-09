@@ -2,7 +2,6 @@ open Lwt
 open Printf
 
 let t_req = ref 0.0
-let set_exp = ref 0
 let irmin_task = "{\"task\":{\"date\":\"0\",\"uid\":\"0\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
 
 let host_table =
@@ -40,7 +39,7 @@ let http_post t req =
 
 let replicate t =
   t_req := Clock.time();
-  printf "\nCreate replica";
+  printf "\n\nCreate replica";
   let rpc_add = Rpc.Enum [
       Rpc.rpc_of_string "add_vm";
       Rpc.rpc_of_string (sprintf "%f" !t_req);
@@ -53,7 +52,7 @@ let replicate t =
 
 let halt t =
   t_req := Clock.time();
-  printf "\nHalt event";
+  printf "\n\nHalt event";
   let rpc_halt = Rpc.Enum [
       Rpc.rpc_of_string "halt_vm";
       Rpc.rpc_of_string (sprintf "%f" !t_req);
@@ -65,7 +64,7 @@ let halt t =
 
 let die t =
   t_req := Clock.time();
-  printf "\nLow load";
+  printf "\n\nLow load";
   let rpc_del = Rpc.Enum [
       Rpc.rpc_of_string "del_vm";
       Rpc.rpc_of_string (sprintf "%f" !t_req);
@@ -76,16 +75,15 @@ let die t =
   lwt x = Cohttp_lwt_body.to_string (del_vm) in
   Lwt.return (printf "%s" x)
 
-let post_results t stats_array = (* post_results must wait ~10 secs to report results *)
-  incr set_exp;
+let post_results t task stats_array = (* post_results must wait ~10 secs to report results *)
   t_req := Clock.time();
-  printf "\n\nResults %d" !set_exp;
+  printf "\n\nResults";
   let rpc_results = Rpc.Enum [
       Rpc.rpc_of_string (Array.fold_right (fun (x, y, z) acc ->
         (string_of_float x)^" "^(sprintf "%d" y)^" "^z^";"^acc) stats_array "")
     ] in
   let rpc_string = Rpc.to_string rpc_results in
-  let results = `String (irmin_task ^ rpc_string ^ "\"}") in
+  let results = `String (task ^ rpc_string ^ "\"}") in
   (*http_post t results*)
   lwt x = Cohttp_lwt_body.to_string (results) in
   Lwt.return (printf "%s" x)

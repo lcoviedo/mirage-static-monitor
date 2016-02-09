@@ -24,6 +24,6 @@ val die: t -> unit Lwt.t
 this unikernel as dead and ready to be garbage
 collected, calling [h] with any response*)
 
-val post_results: t -> (float * int * string) array -> unit Lwt.t
+val post_results: t -> string -> (float * int * string) array -> unit Lwt.t
 (* [post_results ()] asynchronously reports monitoring
 results to Jitsu *)

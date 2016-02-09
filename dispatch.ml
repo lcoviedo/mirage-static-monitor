@@ -9,12 +9,13 @@ let green fmt  = sprintf ("\027[32m"^^fmt^^"\027[m")
 let yellow fmt = sprintf ("\027[33m"^^fmt^^"\027[m")
 let blue fmt   = sprintf ("\027[36m"^^fmt^^"\027[m")
 
+let exp_no = ref 0
 let rt = ref 0.0
 let t_req = ref 0.0
 let k = ref 0
 let stats_array = Array.make 10 (0.0, 0, "")
 let uri_req = (Uri.of_string ("http://irmin/update/jitsu/request/"))
-let uri_dataset = (Uri.of_string ("http://irmin:8080/update/jitsu/exp/"))
+let uri_results = "http://irmin:8080/update/jitsu/exp/"
 let replicate_flag = ref false
 let high_load = 1000  (* 1000 requests per second - High threshold value *)
 let low_load = 100  (* 100 requests per second rate - Low threshold value *)
@@ -40,6 +41,9 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
   let host_table =
     Hashtbl.create 3
 
+  let irmin_task uid =
+    "{\"task\":{\"date\":\"0\",\"uid\":\"" ^ (string_of_int uid) ^ "\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
+
 (** Move http_get *)
   (* Conduit connection helper *) 
   let conduit_conn stack =
@@ -60,7 +64,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       Lwt.return(str_value)
 
   (* Monitoring function *)
-  let rec monitoring spec stack t n c =  (* n equals 10 which is the lenght of rps array*)
+  let rec monitoring spec t t_results n c =  (* n equals 10 which is the lenght of rps array*)
   (* get requests per second and response times *)
   if !k < (int_of_float n) then (
     t_req := Clock.time();
@@ -97,14 +101,15 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
         C.log_s c (sprintf "debug")
       )
     in
-    monitoring spec stack t n c
+    monitoring spec t t_results n c
   )
-  else ( (* Post statistics results *)
+  else ( (* Post stats results *)
+    incr exp_no;
     k := 0; (** TODO -> Fix Uri for results*)
-    lwt x = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_dataset in
+    let task = irmin_task !exp_no in
     let _ =
-      post_results x stats_array in
-    monitoring spec stack t n c
+      post_results t_results task stats_array in
+    monitoring spec t t_results n c
   )
  
   let rec replicate_timer n c =
@@ -123,52 +128,54 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     lwt initial_xs = http_get c stack uri in
     Hashtbl.add host_table "initial_xs"     
       (fun ~port -> `TCP (Ipaddr.of_string_exn initial_xs, 8080));
-    lwt t = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_req in (* initialise t*)
-        let read_fs name =
-          FS.size fs name >>= function
+    lwt t = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_req in
+    let uri_dataset = (Uri.of_string (uri_results ^ vm_name ^ "/data")) in
+    lwt t_results = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_dataset in (* initialise t and t_results*)
+      let read_fs name =
+        FS.size fs name >>= function
+        | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
+        | `Ok size ->
+          FS.read fs name 0 (Int64.to_int size) >>= function
           | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
-          | `Ok size ->
-            FS.read fs name 0 (Int64.to_int size) >>= function
-            | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
-            | `Ok bufs -> return (Cstruct.copyv bufs)
+          | `Ok bufs -> return (Cstruct.copyv bufs)
+      in
+      (* Split a URI into a list of path segments *)
+      let split_path uri =
+        let path = Uri.path uri in
+        let rec aux = function
+          | [] | [""] -> []
+          | hd::tl -> hd :: aux tl
         in
-        (* Split a URI into a list of path segments *)
-        let split_path uri =
-          let path = Uri.path uri in
-          let rec aux = function
-            | [] | [""] -> []
-            | hd::tl -> hd :: aux tl
-          in
-          List.filter (fun e -> e <> "")
-            (aux (Re_str.(split_delim (regexp_string "/") path)))
+        List.filter (fun e -> e <> "")
+          (aux (Re_str.(split_delim (regexp_string "/") path)))
+      in
+      (* dispatch non-file URLs *)
+      let rec dispatcher = function
+        | [] | [""] -> dispatcher ["index.html"]
+        | segments -> 
+          let path = String.concat "/" segments in 
+          Lwt.catch (fun () -> 
+              read_fs path >>= fun body ->                
+              H.respond_string ~status:`OK ~body ()   
+            )  (fun exn ->
+              H.respond_not_found ()
+            )
+      in
+      (* HTTP callback *)
+      let callback conn_id request body =
+        let uri = Cohttp.Request.uri request in
+        dispatcher (split_path uri)
+      in
+      let conn_closed (_,conn_id) (result) = (* result is added to comply with modified cohttp library *)
+        let cid = Cohttp.Connection.to_string conn_id in
+        (*C.log c (sprintf "conns closed: %s" cid);*)
+        ()
         in
-        (* dispatch non-file URLs *)
-        let rec dispatcher = function
-          | [] | [""] -> dispatcher ["index.html"]
-          | segments -> 
-            let path = String.concat "/" segments in 
-            Lwt.catch (fun () -> 
-                read_fs path >>= fun body ->                
-                H.respond_string ~status:`OK ~body ()   
-              )  (fun exn ->
-                H.respond_not_found ()
-              )
-        in
-        (* HTTP callback *)
-        let callback conn_id request body =
-          let uri = Cohttp.Request.uri request in
-          dispatcher (split_path uri)
-        in
-        let conn_closed (_,conn_id) (result) = (* result is added to comply with modified cohttp library *)
-          let cid = Cohttp.Connection.to_string conn_id in
-          (*C.log c (sprintf "conns closed: %s" cid);*)
-          ()
-          in
-        Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
-        let spec = H.make ~conn_closed ~callback:callback () in
-        Lwt.join[( 
+      Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
+      let spec = H.make ~conn_closed ~callback:callback () in
+      Lwt.join[( 
           Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));
           (replicate_timer 10.0 c); (** Change timer *)
-          (monitoring spec stack t 10.0 c); (* Scale events thread *)
-        ]
+          (monitoring spec t t_results 10.0 c); (* Scale events thread *)
+      ]
 end
