@@ -13,13 +13,17 @@ let exp_no = ref 0
 let rt = ref 0.0
 let t_req = ref 0.0
 let k = ref 0
+let rps_array = Array.make 10 (0.0, 0)
 let stats_array = Array.make 10 (0.0, 0, "")
+let rt_array = Array.make 64 0.0
+let obj_count = ref 0
+let oid = ref 0
 let uri_req = (Uri.of_string ("http://irmin/update/jitsu/request/"))
 let uri_results = "http://irmin:8080/update/jitsu/exp/"
 let replicate_flag = ref false
 let high_load = 1000  (* 1000 requests per second - High threshold value *)
 let low_load = 100  (* 100 requests per second rate - Low threshold value *)
-let irmin_ip = "127.0.0.1"  (* Location of irmin store *)
+let irmin_ip = "10.0.0.1"  (* Location of irmin store *)
 let irmin_port = ref 0
 let irmin_1 = ["12:43:3d:a3:d3:02"; "12:43:3d:a3:d3:03"; "12:43:3d:a3:d3:04"; "12:43:3d:a3:d3:05"; 
                "12:43:3d:a3:d3:06"; "12:43:3d:a3:d3:07"; "12:43:3d:a3:d3:08"; "12:43:3d:a3:d3:09";
@@ -42,18 +46,18 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     Hashtbl.create 3
 
   let irmin_task uid =
-    "{\"task\":{\"date\":\"0\",\"uid\":\"" ^ (string_of_int uid) ^ "\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
-
+     "{\"task\":{\"date\":\"0\",\"uid\":\"" ^ (string_of_int uid) ^ "\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
+  
 (** Move http_get *)
   (* Conduit connection helper *) 
   let conduit_conn stack =
     lwt conduit = Conduit_mirage.with_tcp conduit stackv4 stack in
       let res = Resolver_mirage.static host_table in
       let ctx = HTTP.ctx res conduit in 
-      Lwt.return (conduit,ctx)
+      Lwt.return (ctx)
 
   let http_get c stack uri =
-    lwt (conduit, ctx) = conduit_conn stack in
+    lwt ctx = conduit_conn stack in
     C.log_s c (sprintf "Fetching %s:" (Uri.to_string uri)) >>= fun () -> (* debugging *)
     HTTP.get ~ctx uri >>= fun (resp, body) ->
     Cohttp_lwt_body.to_string body >>= fun body ->
@@ -62,52 +66,67 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       let str_value = Re_str.replace_first (Re_str.regexp "\"\\].*") "" str in
       C.log_s c (sprintf "Value: %s" str_value) >>= fun () -> (* debugging *)
       Lwt.return(str_value)
+  
+  (** Remove *)    
+  (*let http_post c stack uri req =    
+    Lwt.ignore_result (
+      lwt ctx = conduit_conn stack in
+      HTTP.post ~ctx ~body:req uri >>= fun (resp, body) ->
+      Cohttp_lwt_body.to_string req >>= fun body -> 
+      C.log_s c (sprintf ("Posting in path %s") (Uri.to_string uri) ) (* debugging *)
+      )*)
 
-  (* Monitoring function *)
+  (* Monitoring function *) (** add rt to if conditions *)
   let rec monitoring spec t t_results n c =  (* n equals 10 which is the lenght of rps array*)
   (* get requests per second and response times *)
   if !k < (int_of_float n) then (
     t_req := Clock.time();
     Time.sleep 1.0 >>= fun () ->
-    let stats = (H.get_stats spec) in (* get_stats function from modified cohttp *)
+    (* get_stats function from modified cohttp *)
+    let stats = (H.get_stats spec) in
       let (failed, rps, active, rt_list) = stats in
       let rt_rpc = Rpc.Enum [
-          Rpc.rpc_of_string (List.fold_right (fun (x) acc -> (string_of_float x)^" ;"^acc) rt_list "")
+          Rpc.rpc_of_string (List.fold_right (fun (x, y) acc -> (string_of_float x)^" "^(string_of_float y)^" ;"^acc) rt_list "")
         ] in
       let rt = Rpc.to_string rt_rpc in
     stats_array.(!k) <- (!t_req,rps,rt);
     incr k;
-    let _ =
     (* Scale out *)
-      if (rps >= high_load && !replicate_flag = true) then (
-        replicate t >>= fun () ->
-        replicate_flag := false;
-        C.log_s c (sprintf "CREATE REPLICA........")  (* debugging *)
-      )
+    if (rps >= high_load && !replicate_flag = true) then (
+      replicate t >>= fun () ->
+      replicate_flag := false;
+      C.log c (sprintf "CREATE REPLICA........");
+      monitoring spec t t_results n c
+    )
     (* Scale back *)
-      else if (rps <= low_load && !replicate_flag = true) then (
-        C.log c (sprintf "DELETE REPLICA!: %d" rps);
-        die t >>= fun () ->
-        Lwt.return (replicate_flag := false) (** Fail if http_post hangs out **)
-      )
-    (* Halt event *) (**TODO -> Enable halt with correct conditions*)
+    else if (rps <= low_load && !replicate_flag = true) then (
+      let time = ref 0.0 in
+      time := Clock.time();
+      C.log c (sprintf "Enter delete case: %f" !time);
+      die t >>= fun () ->  (* lwt () = die t in Lwt.return () *)
+      replicate_flag := false;
+      C.log c (sprintf "DELETE REPLICA: %d" rps);
+      monitoring spec t t_results n c
+    )
+    (* Halt event *) (**TODO -> Enable halt *)
     (*
-      else if (rps < high_load && rps > (*low_load*) 1 && rt >= 0.0001) then (
-        halt t >>= fun () ->
-        C.log_s c (sprintf "HALT EVENT -> stop sending new traffic");
-      )
-  *)
-      else (
-        C.log_s c (sprintf "debug")
-      )
-    in
-    monitoring spec t t_results n c
+    else if (rps < high_load && rps > low_load && rt >= 0.0001) then (
+      halt t >>= fun () ->
+      replicate_flag := false;
+      C.log c (sprintf "HALT EVENT -> stop sending new traffic");
+      monitoring spec t t_results n c
+    )
+    *)
+    else (
+      monitoring spec t t_results n c
+    )
   )
   else ( (* Post stats results *)
     incr exp_no;
-    k := 0; (** TODO -> Fix Uri for results*)
+    C.log c (sprintf "Results case: %d" !exp_no); (* debugging *)
+    k := 0;
     let task = irmin_task !exp_no in
-    let _ =
+    let _ = (* change to post_results >>= ?*)
       post_results t_results task stats_array in
     monitoring spec t t_results n c
   )
@@ -118,7 +137,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     replicate_timer n c
 
   (* START *)
-  let start c fs stack n0 =
+  let start c fs stack n0 () =
     let vm_name = Macaddr.to_string (N0.mac n0) in
     let find_port = List.exists (fun x -> vm_name = x) irmin_2 in
     if find_port = true then (irmin_port := 8081 ) else (irmin_port := 8080);
@@ -128,9 +147,12 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     lwt initial_xs = http_get c stack uri in
     Hashtbl.add host_table "initial_xs"     
       (fun ~port -> `TCP (Ipaddr.of_string_exn initial_xs, 8080));
-    lwt t = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_req in
+    (* initialise t and t_results*)
+    lwt t = 
+      create_irmin_client (module S:V1_LWT.STACKV4 with type t = S.t) stack uri_req host_table in
     let uri_dataset = (Uri.of_string (uri_results ^ vm_name ^ "/data")) in
-    lwt t_results = create_irmin_client (module S:V1_LWT.STACKV4 with type t = 'a) stack uri_dataset in (* initialise t and t_results*)
+    lwt t_results = 
+      create_irmin_client (module S:V1_LWT.STACKV4 with type t =  S.t) stack uri_dataset host_table in
       let read_fs name =
         FS.size fs name >>= function
         | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
@@ -152,8 +174,17 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       (* dispatch non-file URLs *)
       let rec dispatcher = function
         | [] | [""] -> dispatcher ["index.html"]
+        | ["hello"] -> dispatcher ["hello.html"]
+        | ["1"] -> dispatcher ["p-1.html"]
+        | ["2"] -> dispatcher ["p-3.html"]
+        | ["3"] -> dispatcher ["p-4.html"]
+        | ["4"] -> dispatcher ["p-7.html"]
+        | ["5"] -> dispatcher ["p-15.html"]
+        | ["6"] -> dispatcher ["p-27.html"]
+        | ["7"] -> dispatcher ["p-38.html"]
         | segments -> 
           let path = String.concat "/" segments in 
+          incr obj_count;
           Lwt.catch (fun () -> 
               read_fs path >>= fun body ->                
               H.respond_string ~status:`OK ~body ()   
@@ -166,14 +197,15 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
         let uri = Cohttp.Request.uri request in
         dispatcher (split_path uri)
       in
-      let conn_closed (_,conn_id) (result) = (* result is added to comply with modified cohttp library *)
+      (* result is added to comply with modified cohttp library *)
+      let conn_closed (_,conn_id) (result) =
         let cid = Cohttp.Connection.to_string conn_id in
-        (*C.log c (sprintf "conns closed: %s" cid);*)
+        (*C.log c (sprintf "conns closed: %s" cid);*)        
         ()
         in
       Conduit_mirage.with_tcp conduit stackv4 stack >>= fun conduit ->
       let spec = H.make ~conn_closed ~callback:callback () in
-      Lwt.join[( 
+      Lwt.join [( 
           Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));
           (replicate_timer 10.0 c); (** Change timer *)
           (monitoring spec t t_results 10.0 c); (* Scale events thread *)

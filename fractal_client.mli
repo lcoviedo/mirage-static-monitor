@@ -3,7 +3,9 @@ type t
 type response = [ `Ok | `Error of error ] *)
 (** An invocation response. *)
 
-val create_irmin_client: (module V1_LWT.STACKV4 with type t = 'a) -> 'a -> Uri.t -> t Lwt.t
+val create_irmin_client: 
+  (module V1_LWT.STACKV4 with type t = 'a) -> 
+    'a -> Uri.t -> (string, (port:int -> Conduit.endp)) Hashtbl.t -> t Lwt.t
 
 (*type handler = response -> unit Lwt.t*) (* return response lwt*)
 (* An invocation response handler. Consumes a
@@ -25,5 +27,5 @@ this unikernel as dead and ready to be garbage
 collected, calling [h] with any response*)
 
 val post_results: t -> string -> (float * int * string) array -> unit Lwt.t
-(* [post_results ()] asynchronously reports monitoring
-results to Jitsu *)
+(* [post_results ()] asynchronously reports the
+application metrics statistics to Jitsu *)
