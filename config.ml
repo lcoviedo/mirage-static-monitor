@@ -4,8 +4,7 @@ let mode =
   try match String.lowercase (Unix.getenv "FS") with
     | "fat" -> `Fat
     | _     -> `Crunch
-  with Not_found ->
-    `Crunch
+  with Not_found -> `Crunch
 
 let fat_ro dir =
   kv_ro_of_fs (fat_of_files ~dir ())
@@ -34,12 +33,12 @@ let stack console =
   | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
 
 let main =
-	let libraries = ["re.str"; "mirage-http"; "rpclib"] in
+  let libraries = ["re.str"; "mirage-http"; "rpclib"] in
   let packages = ["re"; "mirage-http"] in
-	let deps = [abstract nocrypto] in
+  let deps = [abstract nocrypto] in
   foreign 
-	  ~libraries ~packages ~deps
-		 "Dispatch.Main" (console @-> kv_ro @-> stackv4 @-> network @-> job)
+    ~libraries ~packages ~deps
+      "Dispatch.Main" (console @-> kv_ro @-> stackv4 @-> network @-> job)
 
 let () =
   let sv4 = stack default_console in
