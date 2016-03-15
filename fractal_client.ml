@@ -28,10 +28,10 @@ let create_irmin_client s stack uri host=
     uri;
   }
   
-  let http_post t req =    
-      HTTP.post ~ctx:t.ctx ~body:req t.uri >>= fun (resp, body) ->
-      Cohttp_lwt_body.to_string req >>= fun body -> 
-      Lwt.return () 
+let http_post t req =    
+    HTTP.post ~ctx:t.ctx ~body:req t.uri >>= fun (resp, body) ->
+    Cohttp_lwt_body.to_string req >>= fun body -> 
+    Lwt.return () 
 
 let replicate t =
   t_req := Clock.time();

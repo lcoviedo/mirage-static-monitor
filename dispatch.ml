@@ -78,7 +78,9 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     let stats = (H.get_stats spec) in
       let (failed, rps, active, rt_list) = stats in
       let rt_rpc = Rpc.Enum [
-          Rpc.rpc_of_string (List.fold_right (fun (x, y) acc -> (string_of_float x)^" "^(string_of_float y)^" ;"^acc) rt_list "")
+          Rpc.rpc_of_string (
+            List.fold_right (fun (x, y) acc -> 
+              (string_of_float x)^" "^(string_of_float y)^" ;"^acc) rt_list "")
         ] in
       let rt = Rpc.to_string rt_rpc in
     stats_array.(!k) <- (!t_req,rps,rt);
@@ -92,17 +94,10 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     )
     (* Scale back *)
     else if (rps <= low_load && !replicate_flag = true) then (
-      (*let time = ref 0.0 in
-      time := Clock.time();
-      C.log c (sprintf "Enter delete case: %f" !time);*)
-      die t >>= fun () ->  (* lwt () = die t in Lwt.return () *)
-      (*Lwt.join [
-      (lwt () = die t in Lwt.return ());*)
+      die t >>= fun () ->
       replicate_flag := false;     
       C.log c (sprintf "DELETE REPLICA: %d" rps);
       monitoring spec t s uri n c
-      (*]*)
-      (** This block may be similar to Lwt.join *)      
     )
     (* Halt event *) (**TODO -> Enable halt *)
     (*
@@ -122,7 +117,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     C.log c (sprintf "Results case: %d" !exp_no); (* debugging *)
     k := 0; (** TODO -> Fix Uri for results*)
     let task = irmin_task !exp_no in
-    let uri_results = Uri.of_string ((Uri.to_string uri) ^ (string_of_int !exp_no)) in
+    let uri_results = Uri.of_string (uri ^ (string_of_int !exp_no)) in
     lwt t_results = 
       create_irmin_client (module S:V1_LWT.STACKV4 with type t = S.t) s uri_results host_table
       in   
@@ -141,15 +136,16 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     let find_port = List.exists (fun x -> vm_name = x) irmin_2 in
     if find_port = true then (irmin_port := 8081 ) else (irmin_port := 8080);
     Hashtbl.add host_table "irmin"
-      (fun ~port -> `TCP (Ipaddr.of_string_exn irmin_ip, !irmin_port)); (** enable initial_xs *)
-    let uri = (Uri.of_string ("http://irmin/update/read/jitsu/" ^ vm_name ^ "/initial_xs")) in (** double check uri *)
+      (fun ~port -> `TCP (Ipaddr.of_string_exn irmin_ip, !irmin_port));
+    let uri = 
+      (Uri.of_string ("http://irmin/update/read/jitsu/" ^ vm_name ^ "/initial_xs")) in (** double check uri *)
     lwt initial_xs = http_get c stack uri in
     Hashtbl.add host_table "initial_xs"     
       (fun ~port -> `TCP (Ipaddr.of_string_exn initial_xs, 8080));
     (* initialise t and t_results*)
     lwt t = 
       create_irmin_client (module S:V1_LWT.STACKV4 with type t = S.t) stack uri_req host_table in
-    let uri_dataset = (Uri.of_string (uri_results ^ vm_name ^ "/data")) in
+    let uri_dataset = (uri_results ^ vm_name ^ "/data") in
       let read_fs name =
         FS.size fs name >>= function
         | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
