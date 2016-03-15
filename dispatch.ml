@@ -46,7 +46,9 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     Hashtbl.create 3
 
   let irmin_task uid =
-     "{\"task\":{\"date\":\"0\",\"uid\":\"" ^ (string_of_int uid) ^ "\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
+     "{\"task\":{\"date\":\"0\",\"uid\":\"" ^ 
+       (string_of_int uid) ^ 
+         "\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
   
 (** Move http_get *)
   (* Conduit connection helper *) 
@@ -67,17 +69,7 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       C.log_s c (sprintf "Value: %s" str_value) >>= fun () -> (* debugging *)
       Lwt.return(str_value)
   
-  (** Remove *)    
-  (*let http_post c stack uri req =    
-    Lwt.ignore_result (
-      lwt ctx = conduit_conn stack in
-      HTTP.post ~ctx ~body:req uri >>= fun (resp, body) ->
-      Cohttp_lwt_body.to_string req >>= fun body -> 
-      C.log_s c (sprintf ("Posting in path %s") (Uri.to_string uri) ) (* debugging *)
-      )*)
-
-  (* Monitoring function *) (** add rt to if conditions *)
-  let rec monitoring spec t t_results n c =  (* n equals 10 which is the lenght of rps array*)
+  let rec monitoring spec t s uri n c =  (* n equals 10 which is the lenght of rps array*)
   (* get requests per second and response times *)
   if !k < (int_of_float n) then (
     t_req := Clock.time();
@@ -96,17 +88,21 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       replicate t >>= fun () ->
       replicate_flag := false;
       C.log c (sprintf "CREATE REPLICA........");
-      monitoring spec t t_results n c
+      monitoring spec t s uri n c
     )
     (* Scale back *)
     else if (rps <= low_load && !replicate_flag = true) then (
-      let time = ref 0.0 in
+      (*let time = ref 0.0 in
       time := Clock.time();
-      C.log c (sprintf "Enter delete case: %f" !time);
+      C.log c (sprintf "Enter delete case: %f" !time);*)
       die t >>= fun () ->  (* lwt () = die t in Lwt.return () *)
-      replicate_flag := false;
+      (*Lwt.join [
+      (lwt () = die t in Lwt.return ());*)
+      replicate_flag := false;     
       C.log c (sprintf "DELETE REPLICA: %d" rps);
-      monitoring spec t t_results n c
+      monitoring spec t s uri n c
+      (*]*)
+      (** This block may be similar to Lwt.join *)      
     )
     (* Halt event *) (**TODO -> Enable halt *)
     (*
@@ -114,21 +110,24 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       halt t >>= fun () ->
       replicate_flag := false;
       C.log c (sprintf "HALT EVENT -> stop sending new traffic");
-      monitoring spec t t_results n c
+      monitoring spec t s uri n c
     )
     *)
     else (
-      monitoring spec t t_results n c
+      monitoring spec t s uri n c
     )
   )
   else ( (* Post stats results *)
     incr exp_no;
     C.log c (sprintf "Results case: %d" !exp_no); (* debugging *)
-    k := 0;
+    k := 0; (** TODO -> Fix Uri for results*)
     let task = irmin_task !exp_no in
-    let _ = (* change to post_results >>= ?*)
-      post_results t_results task stats_array in
-    monitoring spec t t_results n c
+    let uri_results = Uri.of_string ((Uri.to_string uri) ^ (string_of_int !exp_no)) in
+    lwt t_results = 
+      create_irmin_client (module S:V1_LWT.STACKV4 with type t = S.t) s uri_results host_table
+      in   
+    post_results t_results task stats_array >>= fun () ->
+    monitoring spec t s uri n c
   )
  
   let rec replicate_timer n c =
@@ -151,8 +150,6 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
     lwt t = 
       create_irmin_client (module S:V1_LWT.STACKV4 with type t = S.t) stack uri_req host_table in
     let uri_dataset = (Uri.of_string (uri_results ^ vm_name ^ "/data")) in
-    lwt t_results = 
-      create_irmin_client (module S:V1_LWT.STACKV4 with type t =  S.t) stack uri_dataset host_table in
       let read_fs name =
         FS.size fs name >>= function
         | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
@@ -208,6 +205,6 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:STACKV4) (N0:NETWORK) = struct
       Lwt.join [( 
           Conduit_mirage.listen conduit (`TCP 80) (H.listen spec));
           (replicate_timer 10.0 c); (** Change timer *)
-          (monitoring spec t t_results 10.0 c); (* Scale events thread *)
+          (monitoring spec t stack uri_dataset 10.0 c); (* Scale events thread *)
       ]
 end

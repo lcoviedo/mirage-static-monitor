@@ -5,11 +5,6 @@ let t_req = ref 0.0
 let irmin_task = 
   "{\"task\":{\"date\":\"0\",\"uid\":\"0\",\"owner\":\"\",\"messages\":[\"write\"]},\"params\":\""
 
-(*let host_table =
-  Hashtbl.create 3
-  
-It will need to add the irmin ip to the host table*)
-
 (*type error
 type response = [ `Ok | `Error of error ] *)
 (** An invocation response. *)
@@ -33,28 +28,10 @@ let create_irmin_client s stack uri host=
     uri;
   }
   
-(*  let conduit_conn stack stackv4=
-    lwt conduit = Conduit_mirage.with_tcp conduit stackv4 stack in
-      let res = Resolver_mirage.static host_table in
-      let ctx = HTTP.ctx res conduit in 
-      Lwt.return ((*conduit,*)ctx)*)
-
-  let http_post t req (*ctx*) =    
+  let http_post t req =    
       HTTP.post ~ctx:t.ctx ~body:req t.uri >>= fun (resp, body) ->
       Cohttp_lwt_body.to_string req >>= fun body -> 
-      Lwt.return ()
-
-(* La buena
-let http_post t req =
-    let t_req1 = Clock.time() in 
-    printf "\n\nEnter Post: %f\n" t_req1;
-    lwt (conduit, ctx) = Lwt.return(t.conduit_helper) in
-    HTTP.post ~ctx ~body:req t.uri >>= fun (resp, body) ->
-    Cohttp_lwt_body.to_string req >>= fun body -> 
-    (*printf ("Posting in path %s") (Uri.to_string t.uri);*)
-    (*printf "%s" body; (* debugging *)*)
-    printf "Post finished";
-    Lwt.return ()    *)  
+      Lwt.return () 
 
 let replicate t =
   t_req := Clock.time();
@@ -65,9 +42,9 @@ let replicate t =
     ]   in
   let add = Rpc.to_string rpc_add in
   let add_vm = `String (irmin_task ^ add ^ "\"}") in
-  (*http_post t add_vm*)
-  lwt x = Cohttp_lwt_body.to_string (add_vm) in
-    Lwt.return (printf "%s" x)
+  http_post t add_vm
+  (*lwt x = Cohttp_lwt_body.to_string (add_vm) in
+    Lwt.return (printf "%s" x)*)
 
 let halt t =
   t_req := Clock.time();
@@ -77,20 +54,20 @@ let halt t =
       Rpc.rpc_of_string (sprintf "%f" !t_req);
     ] in
   let halt_vm = `String (irmin_task ^ (Rpc.to_string rpc_halt) ^ "\"}") in
-  (*http_post t halt_vm*)
-  lwt x = Cohttp_lwt_body.to_string (halt_vm) in
-    Lwt.return (printf "%s" x)
+  http_post t halt_vm
+  (*lwt x = Cohttp_lwt_body.to_string (halt_vm) in
+    Lwt.return (printf "%s" x)*)
 
-let die t (*ctx*) =
+let die t =
   t_req := Clock.time();
-  (*printf "\nLow load: %f" !t_req;*)
+  printf "\nLow load: %f" !t_req;
   let rpc_del = Rpc.Enum [
       Rpc.rpc_of_string "del_vm";
       Rpc.rpc_of_string (sprintf "%f" !t_req);
     ] in
   let del = Rpc.to_string rpc_del in
   let del_vm = `String (irmin_task ^ del ^ "\"}") in 
-  http_post t del_vm (*ctx*)
+  http_post t del_vm
   (*lwt x = Cohttp_lwt_body.to_string (del_vm) in
     Lwt.return (printf "%s" x)*)
 
